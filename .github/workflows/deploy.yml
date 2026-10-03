@@ -1,14 +1,16 @@
 name: Deploy learningAI to GitHub Pages
 
+# The site is published by GitHub Pages from the gh-pages branch
+# (Settings → Pages → Deploy from a branch). This keeps gh-pages
+# in sync with main so every push to main goes live automatically.
+
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: "pages"
@@ -16,22 +18,12 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          fetch-depth: 0
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish main to gh-pages
+        run: git push --force origin HEAD:refs/heads/gh-pages
