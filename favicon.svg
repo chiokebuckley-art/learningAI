@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF"/>
+      <stop offset="50%" stop-color="#3A7BD5"/>
+      <stop offset="100%" stop-color="#FF6B4A"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FF6B4A" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Rounded Rect -->
+  <rect width="64" height="64" rx="16" fill="#0B132B"/>
+  <!-- Neural Circuit Connections -->
+  <path d="M12 24 H22 L32 14 H42" stroke="#00D2FF" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M12 40 H22 L32 50 H52" stroke="#FF6B4A" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <!-- Robot Mascot / Brain Center -->
+  <rect x="18" y="20" width="28" height="24" rx="8" fill="url(#primaryGrad)"/>
+  <!-- Visor Screen -->
+  <rect x="22" y="24" width="20" height="12" rx="4" fill="#060C1B"/>
+  <!-- Glowing Mascot Eyes -->
+  <circle cx="28" cy="30" r="2.5" fill="#00FFCC"/>
+  <circle cx="36" cy="30" r="2.5" fill="#00FFCC"/>
+  <!-- Antenna -->
+  <path d="M32 20 V14" stroke="#00D2FF" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="32" cy="12" r="3" fill="#FFD166"/>
+  <!-- Sparkling Node Points -->
+  <circle cx="12" cy="24" r="2.5" fill="#00D2FF"/>
+  <circle cx="42" cy="14" r="2.5" fill="#00D2FF"/>
+  <circle cx="12" cy="40" r="2.5" fill="#FF6B4A"/>
+  <circle cx="52" cy="50" r="2.5" fill="#FF6B4A"/>
+</svg>

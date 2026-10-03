@@ -1,0 +1,17 @@
+{
+  "name": "learningAI - K-12 AI Education Platform",
+  "short_name": "learningAI",
+  "description": "Zero-cost, privacy-first K-12 Artificial Intelligence education platform featuring in-browser Python WebAssembly, on-device computer vision, and local LLMs.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B132B",
+  "theme_color": "#00D2FF",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "64x64 128x128 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

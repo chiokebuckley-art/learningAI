@@ -1,0 +1,252 @@
+/* Cinematic Video & Visual Theater Overlay Styles */
+#videoTheaterModal {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #02050c;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  user-select: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  padding-top: max(env(safe-area-inset-top, 16px), 14px);
+  padding-bottom: max(env(safe-area-inset-bottom, 20px), 16px);
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#videoTheaterModal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.theater-ambient-glow {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(60px) brightness(0.35) saturate(1.6);
+  transform: scale(1.1);
+  pointer-events: none;
+  opacity: 0.85;
+  transition: background-image 0.5s ease;
+}
+
+/* Top Bar */
+.theater-top-bar {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  width: 100%;
+}
+
+.theater-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theater-tag {
+  background: rgba(0, 210, 255, 0.15);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  color: var(--primary-cyan);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.theater-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.btn-close-theater {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-close-theater:hover {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: #ef4444;
+}
+
+/* Screen Stage */
+.theater-stage-container {
+  position: relative;
+  z-index: 20;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+}
+
+.theater-screen-frame {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 210, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theater-visual-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease;
+}
+
+/* Subtitles Overlay */
+.theater-subtitles-bar {
+  position: absolute;
+  bottom: 24px;
+  left: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 18px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.sub-highlight {
+  color: var(--primary-cyan);
+  text-decoration: underline;
+}
+
+/* Bottom Controls */
+.theater-bottom-controls {
+  position: relative;
+  z-index: 30;
+  background: rgba(11, 19, 43, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.theater-timeline-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+.theater-timeline-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary-cyan), var(--accent-orange));
+  border-radius: 3px;
+}
+
+.theater-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.theater-transport-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-theater-play {
+  background: var(--primary-cyan);
+  color: #040810;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-theater-play:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.6);
+}
+
+.theater-timer {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.theater-chapter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.chapter-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.chapter-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.chapter-btn.active {
+  background: rgba(0, 210, 255, 0.2);
+  border-color: var(--primary-cyan);
+  color: #fff;
+}

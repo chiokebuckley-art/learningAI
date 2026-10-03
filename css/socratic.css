@@ -1,0 +1,261 @@
+/* Socratic Split-Screen ("Draft & Unlock" Workspace) Styles */
+.socratic-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.socratic-top-bar {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.topic-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topic-select {
+  background: #111b2e;
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.gatekeeper-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.gatekeeper-locked {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.gatekeeper-unlocked {
+  background: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+  border: 1px solid rgba(0, 230, 118, 0.4);
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.2);
+}
+
+.socratic-dual-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 20px;
+  min-height: 600px;
+}
+
+/* Left: "My Brain" Student Word Processor */
+.student-editor-card {
+  background: #0d1424;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.editor-toolbar-mini {
+  background: #141f36;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.editor-title-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--primary-cyan);
+  font-size: 0.92rem;
+}
+
+.word-progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
+
+.progress-track {
+  width: 90px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff7043, #00e676);
+  transition: width 0.2s ease;
+}
+
+.essay-text-area {
+  flex: 1;
+  padding: 20px;
+  background: transparent;
+  border: none;
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+}
+
+/* Right: Socratic AI Assistant */
+.socratic-ai-card {
+  background: #0d1424;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: var(--transition);
+}
+
+.socratic-ai-card.locked {
+  filter: grayscale(0.85);
+  opacity: 0.55;
+}
+
+.locked-shield-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 12, 24, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 10;
+  padding: 24px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.socratic-ai-card:not(.locked) .locked-shield-overlay {
+  display: none;
+}
+
+.padlock-huge-icon {
+  font-size: 3.5rem;
+  animation: pulsePadlock 2s infinite ease-in-out;
+}
+
+@keyframes pulsePadlock {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.socratic-header-bar {
+  background: #141f36;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.socratic-messages-scroll {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.socratic-bubble {
+  max-width: 90%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.socratic-bubble-ai {
+  align-self: flex-start;
+  background: rgba(0, 210, 255, 0.08);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  color: #e0f2fe;
+}
+
+.socratic-bubble-user {
+  align-self: flex-end;
+  background: rgba(58, 123, 213, 0.2);
+  border: 1px solid rgba(58, 123, 213, 0.4);
+  color: #ffffff;
+}
+
+.socratic-input-bar {
+  padding: 12px 16px;
+  background: #10192d;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 10px;
+}
+
+.socratic-input-field {
+  flex: 1;
+  background: #090e1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.86rem;
+  outline: none;
+}
+
+.btn-ask-socratic {
+  background: var(--primary-cyan);
+  color: #040810;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-ask-socratic:hover {
+  background: #33dcff;
+}
+
+@media (max-width: 900px) {
+  .socratic-dual-grid {
+    grid-template-columns: 1fr;
+  }
+}

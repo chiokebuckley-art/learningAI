@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00.000 --> 00:05.000
+Our crowning capstone unlocks the mysteries of modern Generative AI.
+
+2
+00:05.000 --> 00:12.500
+Students explore the Transformer architecture through an interactive byte-pair tokenizer, watching sentences split into color-coded tokens and IDs.
+
+3
+00:12.500 --> 00:19.500
+They interact with 3D self-attention heatmaps to visualize how words connect across contextual dimensions.
+
+4
+00:19.500 --> 00:27.500
+Next, our VRAM and Parameter calculator demystifies the difference between eight-billion and seventy-billion parameter models,
+
+5
+00:27.500 --> 00:33.000
+explaining model weights, FP16 precision, and four-bit quantization.
+
+6
+00:33.000 --> 00:41.000
+Finally, students learn how to download HuggingFace models, launch Ollama, and run sovereign AI completely offline on their own hardware.
+

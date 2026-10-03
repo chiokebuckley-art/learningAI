@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00.000 --> 00:05.000
+For students aged twelve to eighteen, welcome to The Innovation Studio.
+
+2
+00:05.000 --> 00:12.000
+This is a professional dark-mode development environment inspired by VS Code, running full Python 3.11 right in the browser via Pyodide.
+
+3
+00:12.000 --> 00:20.000
+In The Agri-Sorter lab, students build real neural networks and convolutional image classifiers to detect blight and rust on crops.
+
+4
+00:20.000 --> 00:26.500
+They evaluate real confusion matrices, training loss curves, and validation accuracy metrics.
+
+5
+00:26.500 --> 00:33.500
+In our Smart Hardware module, students control a simulated IoT home with Python scripts and in-browser voice recognition.
+
+6
+00:33.500 --> 00:41.000
+And in our Ethics forum, students debate autonomous vehicle moral algorithms and audit algorithmic bias in facial recognition.
+

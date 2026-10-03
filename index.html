@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>learningAI — Comprehensive K-12 AI Education Platform</title>
+  <meta name="description" content="Zero-cost, privacy-first K-12 AI Education Platform featuring in-browser Python WebAssembly, on-device TensorFlow.js, visual Blockly logic, and offline local LLMs.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#00D2FF">
+
+  <!-- Core & Portal Styles -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/sandbox.css">
+  <link rel="stylesheet" href="css/studio.css">
+  <link rel="stylesheet" href="css/socratic.css">
+  <link rel="stylesheet" href="css/video-theater.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="brand-container" id="brandHomeLink">
+      <img src="favicon.svg" alt="learningAI Logo" class="brand-logo">
+      <span class="brand-name">learningAI</span>
+      <span class="brand-badge">Zero Cost • Privacy First</span>
+    </div>
+
+    <!-- Portal Switcher Navigation -->
+    <nav class="portal-nav" aria-label="Portal Navigation">
+      <button class="nav-tab active" data-portal="sandbox">
+        <span class="nav-tab-icon">🎨</span>
+        <span>The Sandbox (Ages 6–11)</span>
+      </button>
+      <button class="nav-tab" data-portal="studio">
+        <span class="nav-tab-icon">⚡</span>
+        <span>The Innovation Studio (Ages 12–18)</span>
+      </button>
+      <button class="nav-tab" data-portal="socratic">
+        <span class="nav-tab-icon">🧠</span>
+        <span>Socratic Split-Screen (Co-Pilot)</span>
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button class="btn-video-theater" id="btnOpenVideoTheater">
+        <span class="icon">🎬</span>
+        <span>Video Theater</span>
+      </button>
+      <button class="btn-zero-cost-info" id="btnZeroCostInfo">
+        <span>$0.00</span>
+        <span class="badge-tag">No Cloud Bills</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-wrapper">
+
+    <!-- Zero Cost Infrastructure Callout -->
+    <section class="zero-cost-banner" aria-label="Zero Cost Platform Guarantee">
+      <div class="zero-cost-content">
+        <span class="zero-cost-icon">🛡️</span>
+        <div>
+          <strong>100% In-Browser & Privacy-Preserving Architecture:</strong>
+          Python compiles in browser memory via WebAssembly (Pyodide), computer vision trains on-device via TensorFlow.js, and Generative AI runs offline with Ollama.
+        </div>
+      </div>
+      <div>
+        <span class="badge-tag">Wasm Powered</span>
+        <span class="badge-tag">COPPA / FERPA Safe</span>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- PORTAL 1: THE SANDBOX (AGES 6-11)                             -->
+    <!-- ============================================================== -->
+    <section class="portal-section active" id="portalSandbox">
+      
+      <!-- Mascot Banner -->
+      <div class="sandbox-hero">
+        <div class="mascot-card">
+          <img src="assets/images/learning_ai_mascot.jpg" alt="Chip the AI Mascot" class="mascot-avatar">
+          <div class="mascot-speech">
+            <h3>Hi, I'm Chip! Welcome to The Sandbox! 🤖</h3>
+            <p>AI isn't magic or a robot brain—it's math, data, and pattern matching! Choose your grade level below to explore:</p>
+          </div>
+        </div>
+
+        <div class="grade-level-selector">
+          <button class="grade-btn active" data-grade="grade3">3rd Grade: Vision Lab</button>
+          <button class="grade-btn" data-grade="grade4">4th Grade: Blockly Logic</button>
+          <button class="grade-btn" data-grade="grade5">5th Grade: Autonomous Bot</button>
+        </div>
+      </div>
+
+      <!-- 3rd Grade: Teachable Machine & Dataset Bias -->
+      <div class="sandbox-module active" id="sandboxGrade3">
+        <div class="vision-lab-grid">
+          
+          <!-- Camera / Synthetic Feeder -->
+          <div class="camera-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="font-size:1.1rem; color:#fff;">Live Pattern Recognition Camera</h3>
+              <span class="badge-tag">On-Device TensorFlow.js</span>
+            </div>
+
+            <div class="camera-viewport-wrapper">
+              <video id="cameraVideo" class="camera-video" playsinline muted autoplay></video>
+              <canvas id="cameraOverlay" class="camera-canvas-overlay" width="480" height="360"></canvas>
+            </div>
+
+            <div class="camera-controls-row">
+              <button class="btn-pill btn-pill-cyan" id="btnToggleCamera">📷 Start Webcam</button>
+              <button class="btn-pill btn-pill-amber" id="btnTestYellowPencil">✏️ Test Yellow Pencil</button>
+              <button class="btn-pill btn-pill-cyan" id="btnTestBluePencil">✏️ Test Blue Pencil</button>
+              <button class="btn-pill btn-pill-pink" id="btnTestEraser">🧼 Test Pink Eraser</button>
+            </div>
+
+            <!-- Dataset Bias Alert Container -->
+            <div class="bias-alert-card" id="biasAlertCard" style="display:none;">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <h4>Dataset Bias Alert</h4>
+                <p>The model was trained exclusively on yellow pencils. When presented with a blue pencil, it fails because it lacks diverse training examples!</p>
+                <button class="btn-pill btn-pill-amber" id="btnFixBias" style="margin-top:8px; font-size:0.78rem;">💡 Add Blue Pencils to Training Set</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Training Data & Confidence Meters -->
+          <div class="training-dashboard">
+            <h3 style="font-size:1.1rem; color:#fff;">Real-Time Classification Output</h3>
+
+            <div class="confidence-meter-card">
+              <div class="confidence-header">
+                <span>✏️ Pencil Class</span>
+                <span id="pencilConfidencePct" style="color:var(--accent-amber);">98%</span>
+              </div>
+              <div class="confidence-bar-bg">
+                <div class="confidence-fill fill-pencil" id="pencilBarFill" style="width: 98%;"></div>
+              </div>
+            </div>
+
+            <div class="confidence-meter-card">
+              <div class="confidence-header">
+                <span>🧼 Eraser Class</span>
+                <span id="eraserConfidencePct" style="color:var(--accent-pink);">2%</span>
+              </div>
+              <div class="confidence-bar-bg">
+                <div class="confidence-fill fill-eraser" id="eraserBarFill" style="width: 2%;"></div>
+              </div>
+            </div>
+
+            <div class="bins-container">
+              <div class="dataset-bin active">
+                <span style="font-size:1.5rem;">✏️</span>
+                <div style="font-size:0.85rem; font-weight:700; color:#fff;">Pencil Samples</div>
+                <div class="bin-count" id="pencilSampleCount" style="color:var(--accent-amber);">20</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Trained Features</div>
+              </div>
+
+              <div class="dataset-bin">
+                <span style="font-size:1.5rem;">🧼</span>
+                <div style="font-size:0.85rem; font-weight:700; color:#fff;">Eraser Samples</div>
+                <div class="bin-count" id="eraserSampleCount" style="color:var(--accent-pink);">20</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Trained Features</div>
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding:12px; border-radius:10px; font-size:0.82rem; color:var(--text-muted);">
+              <strong>Pedagogical Insight:</strong> Computers don't know what a "pencil" is. They calculate mathematical histograms of pixel color, edges, and aspect ratios. If you only show it yellow pencils, it assumes "pencil = yellow"!
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 4th Grade: Visual Blockly Maze -->
+      <div class="sandbox-module" id="sandboxGrade4">
+        <div class="blockly-grid">
+          
+          <!-- Block Palette & Workspace -->
+          <div class="block-palette">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="font-size:1.1rem; color:#fff;">Blockly Visual Logic Blocks</h3>
+              <span class="badge-tag">Drag & Drop Logic</span>
+            </div>
+
+            <p style="font-size:0.84rem; color:var(--text-muted);">Click blocks to snap them into your autonomous program sequence:</p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <div class="code-puzzle-block block-move" data-action="forward">🚀 Move Forward</div>
+              <div class="code-puzzle-block block-turn" data-action="turn_left">↺ Turn Left (90°)</div>
+              <div class="code-puzzle-block block-turn" data-action="turn_right">↻ Turn Right (90°)</div>
+              <div class="code-puzzle-block block-if" data-action="if_obstacle_turn">❓ IF Obstacle Ahead → Turn Right</div>
+            </div>
+
+            <h4 style="font-size:0.9rem; color:#fff; margin-top:8px;">Your Program Sequence:</h4>
+            <div class="block-workspace" id="blockWorkspace">
+              <div class="code-puzzle-block block-start">▶ WHEN Program Starts</div>
+              <div class="code-puzzle-block block-move" data-action="forward">🚀 Move Forward</div>
+              <div class="code-puzzle-block block-if" data-action="if_obstacle_turn">❓ IF Obstacle Ahead → Turn Right</div>
+              <div class="code-puzzle-block block-move" data-action="forward">🚀 Move Forward</div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button class="btn-pill btn-pill-cyan" id="btnRunMazeProgram">▶ Execute Program</button>
+              <button class="btn-pill btn-pill-amber" id="btnResetMaze">🔄 Reset Rover</button>
+              <button class="btn-pill" id="btnClearBlocks" style="background:rgba(255,255,255,0.1); color:#fff;">Clear All</button>
+            </div>
+          </div>
+
+          <!-- Maze Simulation Canvas -->
+          <div class="maze-canvas-wrapper">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+              <h3 style="font-size:1.1rem; color:#fff;">Rover Navigation Grid</h3>
+              <span id="mazeStatusText" style="font-size:0.84rem; color:var(--primary-cyan); font-weight:600;">Ready to execute.</span>
+            </div>
+
+            <canvas id="mazeCanvas" width="288" height="288"></canvas>
+
+            <div style="font-size:0.82rem; color:var(--text-muted); text-align:center;">
+              Blue Circle: <strong>Rover</strong> | 🧱: <strong>Obstacle Rock</strong> | ⭐: <strong>Goal Star</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 5th Grade: 2D Autonomous Robot Sandbox -->
+      <div class="sandbox-module" id="sandboxGrade5">
+        <div class="agent-grid">
+          
+          <div class="robot-canvas-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="font-size:1.1rem; color:#fff;">2D Virtual Robot Hardware Simulator</h3>
+              <span class="badge-tag">LIDAR Raycasting</span>
+            </div>
+
+            <canvas id="robotCanvas" width="560" height="350"></canvas>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div style="display:flex; gap:8px;">
+                <button class="btn-pill btn-pill-cyan" id="btnToggleAgentAuto">⏸ Pause Autonomy</button>
+                <button class="btn-pill btn-pill-amber" id="btnClearAgentObs">Clear Obstacles</button>
+                <button class="btn-pill" id="btnResetAgentBot" style="background:rgba(255,255,255,0.1); color:#fff;">Reset Bot</button>
+              </div>
+              <span style="font-size:0.8rem; color:var(--text-muted);">💡 Click anywhere on the grid to drop new obstacle blocks!</span>
+            </div>
+          </div>
+
+          <div class="sensor-telemetry-card">
+            <h3 style="font-size:1.1rem; color:#fff;">Intelligent Control Loop</h3>
+
+            <div class="loop-visualizer">
+              <span class="loop-step active" id="loopStepInput">1. INPUT<br/>(Sensors)</span>
+              <span style="color:var(--primary-cyan);">➔</span>
+              <span class="loop-step active" id="loopStepProcess">2. PROCESS<br/>(Algorithm)</span>
+              <span style="color:var(--primary-cyan);">➔</span>
+              <span class="loop-step active" id="loopStepOutput">3. OUTPUT<br/>(Motors)</span>
+            </div>
+
+            <div style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px;">
+              <h4 style="font-size:0.88rem; color:#00d2ff; margin-bottom:6px;">LIDAR Rangefinder Telemetry</h4>
+              <div id="sensorTelemetryReadout" style="font-family:var(--font-mono); font-size:0.82rem;"></div>
+            </div>
+
+            <div style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px; font-size:0.82rem; color:var(--text-muted);">
+              <strong>Braitenberg Vehicle Principle:</strong> The rover uses 3 simulated laser rays. When an obstacle drops within 45 pixels, the algorithmic processor calculates unequal wheel speeds to turn away automatically without human teleoperation!
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- PORTAL 2: THE INNOVATION STUDIO (AGES 12-18)                  -->
+    <!-- ============================================================== -->
+    <section class="portal-section" id="portalStudio">
+      
+      <div class="studio-container">
+        
+        <!-- IDE Top Toolbar -->
+        <div class="studio-toolbar">
+          <div class="studio-file-tabs" id="studioFileTabs">
+            <!-- Tabs injected dynamically -->
+          </div>
+
+          <div class="studio-actions">
+            <div class="pyodide-status-pill" id="pyodideStatusIndicator">
+              <span class="status-dot"></span>
+              <span>Pyodide 3.11 Wasm Ready ($0 Cloud)</span>
+            </div>
+            <button class="btn-run-code" id="btnRunStudioCode">
+              <span>▶ Run Code</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dual Pane VS Code Split Screen -->
+        <div class="studio-dual-pane">
+          
+          <!-- Left: Code Editor -->
+          <div class="editor-pane-card">
+            <div class="editor-header-bar">
+              <span id="activeEditorFileName">agri_sorter.py</span>
+              <span>Python 3.11 • UTF-8</span>
+            </div>
+            <textarea id="codeEditorArea" class="code-editor-area" spellcheck="false"></textarea>
+          </div>
+
+          <!-- Right: Interactive Lab & Terminal -->
+          <div class="output-pane-card">
+            <div class="output-header-bar">
+              <span>INTERACTIVE DATA VISUALIZATION & OUTPUT</span>
+              <span>Zero-Server Compute</span>
+            </div>
+
+            <div class="output-content-scroll">
+              
+              <!-- 1. Agri-Sorter Lab -->
+              <div id="studioOutputAgri" class="agri-sorter-visualizer">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <h4 style="color:#fff; font-size:0.95rem;">Agri-Sorter: Field Crop Leaf Inspector</h4>
+                  <span class="badge-tag">CNN Image Classifier</span>
+                </div>
+
+                <div class="agri-sample-grid">
+                  <div class="agri-sample-card active" data-sample-id="sample1">
+                    <div style="font-size:1.8rem;">🌽</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#fff;">Corn #101</div>
+                    <span class="agri-sample-badge badge-healthy">Healthy</span>
+                  </div>
+                  <div class="agri-sample-card" data-sample-id="sample2">
+                    <div style="font-size:1.8rem;">🍂</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#fff;">Corn #204</div>
+                    <span class="agri-sample-badge badge-blight">Leaf Blight</span>
+                  </div>
+                  <div class="agri-sample-card" data-sample-id="sample3">
+                    <div style="font-size:1.8rem;">🌾</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#fff;">Corn #309</div>
+                    <span class="agri-sample-badge badge-rust">Common Rust</span>
+                  </div>
+                </div>
+
+                <div id="agriDiagnosisOutput"></div>
+
+                <div>
+                  <h5 style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;">Model Evaluation: Confusion Matrix</h5>
+                  <table class="confusion-matrix-table">
+                    <thead>
+                      <tr>
+                        <th>Actual \ Predicted</th>
+                        <th>Healthy</th>
+                        <th>Blight</th>
+                        <th>Rust</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Healthy Corn</td>
+                        <td class="matrix-cell-high">98.2%</td>
+                        <td class="matrix-cell-low">1.2%</td>
+                        <td class="matrix-cell-low">0.6%</td>
+                      </tr>
+                      <tr>
+                        <td>Leaf Blight</td>
+                        <td class="matrix-cell-low">2.4%</td>
+                        <td class="matrix-cell-high">94.6%</td>
+                        <td class="matrix-cell-low">3.0%</td>
+                      </tr>
+                      <tr>
+                        <td>Common Rust</td>
+                        <td class="matrix-cell-low">1.0%</td>
+                        <td class="matrix-cell-low">2.9%</td>
+                        <td class="matrix-cell-high">96.1%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 2. Smart Home IoT Lab -->
+              <div id="studioOutputSmartHome" style="display:none; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <h4 style="color:#fff; font-size:0.95rem;">Smart Home IoT Simulator</h4>
+                  <span class="badge-tag">Web Speech API</span>
+                </div>
+
+                <div class="voice-command-bar">
+                  <div style="flex:1;">
+                    <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted);">Voice Transcript:</span>
+                    <div id="voiceTranscriptText" style="font-size:0.85rem; color:#fff; font-weight:600;">Click mic and say: "Turn on the living room lights"</div>
+                  </div>
+                  <button class="btn-mic" id="btnSmartHomeMic">🎤 Speak Command</button>
+                </div>
+
+                <div class="smart-home-floorplan">
+                  <div class="iot-room" id="roomLivingRoom">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <strong>🛋️ Living Room</strong>
+                      <input type="checkbox" id="toggleLivingLight">
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--text-muted);">RGB LED Smart Array</span>
+                  </div>
+
+                  <div class="iot-room" id="roomKitchen">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <strong>🍳 Kitchen</strong>
+                      <input type="checkbox" id="toggleKitchenLight">
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--text-muted);">Under-cabinet Illumination</span>
+                  </div>
+
+                  <div class="iot-room">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <strong>🌡️ Thermostat</strong>
+                      <span id="thermostatDisplayVal" style="font-weight:700; color:var(--primary-cyan);">70°F</span>
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--text-muted);">Climate Control Loop</span>
+                  </div>
+
+                  <div class="iot-room">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <strong>🪟 Automated Blinds</strong>
+                      <span id="blindsStatusVal" style="font-weight:700; color:var(--accent-amber);">Closed</span>
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--text-muted);">Servo Actuators</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Ethics & Policy Lab -->
+              <div id="studioOutputEthics" style="display:none; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <h4 style="color:#fff; font-size:0.95rem;">AI Ethics & Algorithmic Parity Audit</h4>
+                  <span class="badge-tag">Fairness Metrics</span>
+                </div>
+
+                <div style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:14px;">
+                  <h5 style="color:#ef4444; font-size:0.9rem; margin-bottom:4px;">🚨 Audit Finding: Disparity Ratio 7.17x</h5>
+                  <p style="font-size:0.84rem; color:#cbd5e1;">The facial recognition classifier exhibited an 8.6% false match rate under low-contrast ambient conditions versus 1.2% in studio lighting. This violates standard equality criteria.</p>
+                </div>
+
+                <div style="background:rgba(0,0,0,0.25); border-radius:10px; padding:14px;">
+                  <h5 style="font-size:0.88rem; color:#fff; margin-bottom:6px;">Autonomous Vehicle Dilemma (Trolley Problem Algorithm)</h5>
+                  <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">When an unavoidable collision occurs, how should autonomous trajectory planners weigh passenger survival vs. pedestrian density? Students write policy constraints directly in code.</p>
+                </div>
+              </div>
+
+              <!-- 4. Capstone Transformer Lab -->
+              <div id="studioOutputTransformer" style="display:none;" class="transformer-lab-container">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <h4 style="color:#fff; font-size:0.95rem;">Transformer Attention & Tokenizer Playground</h4>
+                  <span class="badge-tag">Llama-3 Architecture</span>
+                </div>
+
+                <div class="tokenizer-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:0.8rem; color:var(--text-muted);">Type text to see real-time BPE Tokenizer chunking & IDs:</span>
+                    <span id="tokenCountVal" style="font-size:0.8rem; font-weight:700; color:var(--primary-cyan);">6 tokens</span>
+                  </div>
+                  <input type="text" id="tokenizerTextInput" value="Local Generative AI is here." style="width:100%; background:#040711; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 12px; color:#fff; font-family:var(--font-mono); font-size:0.88rem; outline:none;">
+                  <div id="tokenChipsContainer" class="token-chips-display"></div>
+                </div>
+
+                <div>
+                  <h5 style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;">Multi-Head Self-Attention Relational Graph</h5>
+                  <canvas id="attentionMatrixCanvas" class="attention-matrix-canvas"></canvas>
+                </div>
+
+                <div class="vram-calculator-box">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>VRAM & Parameter Calculator</strong>
+                    <div style="display:flex; gap:8px;">
+                      <select id="vramParamSelect" style="background:#111b2e; color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 8px; font-size:0.78rem;">
+                        <option value="1">1B Params</option>
+                        <option value="7">7B Params</option>
+                        <option value="8" selected>8B Params (Llama 3)</option>
+                        <option value="14">14B Params</option>
+                        <option value="70">70B Params</option>
+                      </select>
+                      <select id="vramQuantSelect" style="background:#111b2e; color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 8px; font-size:0.78rem;">
+                        <option value="16">16-bit (FP16)</option>
+                        <option value="8">8-bit (INT8)</option>
+                        <option value="4" selected>4-bit (GGUF/AWQ)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="vramCalcResult"></div>
+                </div>
+
+                <div style="background:rgba(0,210,255,0.06); border:1px solid rgba(0,210,255,0.25); border-radius:10px; padding:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <strong style="color:var(--primary-cyan); font-size:0.88rem;">Offline Local Model Launcher (Ollama / LM Studio)</strong>
+                    <button class="btn-pill btn-pill-cyan" id="btnTestLocalOllama" style="font-size:0.75rem; padding:4px 10px;">Ping Local Ollama</button>
+                  </div>
+                  <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">Run sovereign open-source models directly on your hardware without monthly subscription fees or cloud latency.</p>
+                  <div id="localOllamaStatus" style="margin-top:8px; font-size:0.8rem;"></div>
+                </div>
+              </div>
+
+              <!-- Terminal Console Output -->
+              <div>
+                <h5 style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;">Terminal Console (Standard Output & Exceptions)</h5>
+                <pre id="studioTerminal" class="terminal-window">$ Ready for execution. Click 'Run Code' or press Ctrl+Enter.</pre>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- PORTAL 3: SOCRATIC SPLIT-SCREEN ("DRAFT & UNLOCK")            -->
+    <!-- ============================================================== -->
+    <section class="portal-section" id="portalSocratic">
+      
+      <div class="socratic-container">
+        
+        <!-- Socratic Top Bar -->
+        <div class="socratic-top-bar">
+          <div class="topic-selector-group">
+            <span style="font-size:0.88rem; font-weight:700; color:#fff;">Curriculum Topic:</span>
+            <select id="socraticTopicSelect" class="topic-select">
+              <option value="arch_bridges">History & Engineering: Roman Stone Arch Bridges & Mortar Load</option>
+              <option value="renewable_grid">Environmental Science: Renewable Energy Grid Reliability & Storage</option>
+            </select>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <button class="btn-pill" id="btnLoadSampleDraft" style="background:rgba(255,255,255,0.08); color:#fff; font-size:0.8rem;">📝 Load Sample Draft</button>
+            <div class="gatekeeper-status-badge gatekeeper-locked" id="gatekeeperBadge">
+              <span>🔒 AI Locked</span>
+              <span style="font-size:0.75rem; font-weight:normal;">(200 words needed)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split Grid: Student Editor on Left, Socratic AI on Right -->
+        <div class="socratic-dual-grid">
+          
+          <!-- Left: My Brain Student Editor -->
+          <div class="student-editor-card">
+            <div class="editor-toolbar-mini">
+              <div class="editor-title-area">
+                <span>✍️</span>
+                <span>My Brain (Original Student Thought)</span>
+              </div>
+              <div class="word-progress-wrapper">
+                <span id="wordCountDisplayVal">0 / 200 words</span>
+                <div class="progress-track">
+                  <div class="progress-fill-bar" id="wordProgressFill"></div>
+                </div>
+              </div>
+            </div>
+
+            <textarea id="studentEssayText" class="essay-text-area" spellcheck="true"></textarea>
+          </div>
+
+          <!-- Right: Socratic AI Assistant -->
+          <div class="socratic-ai-card locked" id="socraticAiPanel">
+            
+            <!-- Locked Gatekeeper Overlay -->
+            <div class="locked-shield-overlay" id="socraticLockOverlay">
+              <div class="padlock-huge-icon">🔒</div>
+              <h3 style="color:#fff; font-size:1.2rem;">Socratic Tutor is Locked</h3>
+              <p id="socraticLockMessage" style="font-size:0.88rem; color:var(--text-muted); max-width:320px;">
+                Write at least 200 words of authentic human thought in "My Brain" on the left before the AI unlocks!
+              </p>
+              <div style="font-size:0.76rem; color:var(--accent-amber); background:rgba(255,179,0,0.15); padding:6px 12px; border-radius:6px;">
+                Pedagogy Rule: No outsourcing critical thinking to algorithms.
+              </div>
+            </div>
+
+            <!-- Unlocked Socratic Chat Interface -->
+            <div class="socratic-header-bar">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.1rem;">🏛️</span>
+                <strong style="color:#fff; font-size:0.92rem;">Socratic Mentor (Strict Inquiry Mode)</strong>
+              </div>
+              <span class="badge-tag" style="background:rgba(0,230,118,0.2); color:#00e676;">Unlocked</span>
+            </div>
+
+            <div class="socratic-messages-scroll" id="socraticMessages">
+              <!-- Messages injected dynamically -->
+            </div>
+
+            <div class="socratic-input-bar">
+              <input type="text" id="socraticQuestionInput" class="socratic-input-field" placeholder="Ask for feedback or examine your blind spots...">
+              <button class="btn-ask-socratic" id="btnAskSocratic">Inquire</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- CINEMATIC VIDEO & VISUAL THEATER MODAL OVERLAY                 -->
+  <!-- ============================================================== -->
+  <div id="videoTheaterModal" role="dialog" aria-modal="true" aria-label="Video Theater">
+    
+    <!-- Ambient Backlight -->
+    <div class="theater-ambient-glow" id="theaterAmbientGlow"></div>
+
+    <!-- Top Bar -->
+    <div class="theater-top-bar">
+      <div class="theater-badge-group">
+        <span class="theater-tag">4K VISUAL MASTER</span>
+        <h2 class="theater-title" id="theaterChapterTitle">Platform Overview</h2>
+      </div>
+      <button class="btn-close-theater" id="btnCloseTheater" title="Close Theater">✕</button>
+    </div>
+
+    <!-- Screen Stage -->
+    <div class="theater-stage-container">
+      <div class="theater-screen-frame">
+        <img src="assets/images/learning_ai_hero.jpg" alt="Video Keyframe" class="theater-visual-image" id="theaterVisualImage">
+        <div class="theater-subtitles-bar" id="theaterSubtitles">
+          <span>Loading synchronized narration...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="theater-bottom-controls">
+      <!-- Scrubbing Timeline -->
+      <div class="theater-timeline-bar" id="theaterTimeline">
+        <div class="theater-timeline-progress" id="theaterProgress"></div>
+      </div>
+
+      <div class="theater-buttons-row">
+        <div class="theater-transport-group">
+          <button class="btn-theater-play" id="btnTheaterPlay" title="Play / Pause">▶</button>
+          <span class="theater-timer" id="theaterTimer">0:00 / 0:46</span>
+        </div>
+
+        <div class="theater-chapter-pills" id="theaterChapterPills">
+          <!-- Chapter pills injected by video-theater.js -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/video-theater.js"></script>
+  <script src="js/sandbox-vision.js"></script>
+  <script src="js/sandbox-blockly.js"></script>
+  <script src="js/sandbox-agent.js"></script>
+  <script src="js/studio-editor.js"></script>
+  <script src="js/studio-agrisorter.js"></script>
+  <script src="js/studio-smarthome.js"></script>
+  <script src="js/studio-transformer.js"></script>
+  <script src="js/socratic-split.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
