@@ -422,4 +422,47 @@
   .vision-lab-grid, .blockly-grid, .agent-grid {
     grid-template-columns: 1fr;
   }
+  .sandbox-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .grade-level-selector {
+    width: 100%;
+  }
+  .grade-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .sandbox-hero {
+    padding: 16px;
+    gap: 16px;
+  }
+  /* Stack Chip above the speech bubble so the text gets the full width */
+  .mascot-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 14px;
+  }
+  .mascot-avatar {
+    width: 76px;
+    height: 76px;
+  }
+  .mascot-speech {
+    max-width: none;
+    width: 100%;
+  }
+  .mascot-speech::before {
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+    border-width: 0 6px 10px 6px;
+    border-color: transparent transparent rgba(18, 28, 48, 0.9) transparent;
+  }
+  .grade-btn {
+    padding: 8px 6px;
+    font-size: 0.76rem;
+    line-height: 1.25;
+  }
 }

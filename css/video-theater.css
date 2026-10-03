@@ -250,3 +250,55 @@
   border-color: var(--primary-cyan);
   color: #fff;
 }
+
+/* Phones: subtitles sit under the picture instead of covering it */
+@media (max-width: 640px) {
+  .theater-top-bar {
+    padding: 8px 12px;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .theater-badge-group {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    min-width: 0;
+  }
+  .theater-tag {
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+  .theater-title {
+    font-size: 0.95rem;
+  }
+  .btn-close-theater {
+    flex: 0 0 auto;
+  }
+  .theater-stage-container {
+    padding: 8px 12px;
+  }
+  .theater-screen-frame {
+    aspect-ratio: auto;
+    flex-direction: column;
+    gap: 12px;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .theater-visual-image {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 210, 255, 0.2);
+  }
+  .theater-subtitles-bar {
+    position: static;
+    width: 100%;
+    font-size: 0.92rem;
+    padding: 10px 14px;
+  }
+  .theater-bottom-controls {
+    padding: 10px 12px;
+  }
+}

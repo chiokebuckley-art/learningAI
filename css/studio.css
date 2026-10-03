@@ -376,5 +376,50 @@
 @media (max-width: 1024px) {
   .studio-dual-pane {
     grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .code-editor-area {
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 640px) {
+  .studio-toolbar {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  /* File tabs become a swipeable strip instead of overflowing the page */
+  .studio-file-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .studio-file-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .file-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .studio-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .btn-run-code {
+    white-space: nowrap;
+  }
+  /* 16px stops iOS Safari from zooming in when the editor is tapped */
+  .code-editor-area {
+    font-size: 16px;
+    padding: 12px;
+  }
+  .editor-header-bar,
+  .output-header-bar {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+  .output-content-scroll {
+    padding: 12px;
   }
 }
