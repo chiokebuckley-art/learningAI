@@ -5,7 +5,7 @@
 [![Privacy First](https://img.shields.io/badge/Privacy-COPPA%20%2F%20FERPA%20Compliant-ff7043.svg)](#privacy--compliance)
 [![PWA Ready](https://img.shields.io/badge/PWA-Installable%20%26%20Offline-b388ff.svg)](#pwa--offline-support)
 
-**`learningAI`** is an all-in-one, privacy-first, zero-cost Progressive Web Application (PWA) and curriculum platform engineered to demystify artificial intelligence for students from kindergarten through 12th grade (ages 6 to 18).
+**`learningAI`** is an all-in-one, privacy-first, zero-cost Progressive Web Application (PWA) and curriculum platform engineered to demystify artificial intelligence for every age: a shared AI Literacy Core for everyone, plus hands-on labs for students from kindergarten through 12th grade (ages 6 to 18).
 
 ---
 
@@ -44,6 +44,23 @@ Educational institutions and school districts cannot afford multi-thousand dolla
 ---
 
 ## 🏛️ Curriculum Structure & Platform Blueprint
+
+The curriculum follows a coordinated, all-ages progression (Understand → Apply → Create): one shared AI literacy foundation for everyone, then age- and role-specific pathways into hands-on labs and projects. This mirrors the structure of China's national AI education push (common literacy for every stage, applied practice, advanced talent tracks, trained instructors, lifelong learning) while deliberately leaving out classroom surveillance and political-conformity requirements.
+
+### Section 0: AI Literacy Core (All Ages)
+*Goal: Every learner, child to grandparent, can understand AI, direct it, check its work, protect information, and keep people in charge.*
+
+Seven interactive lessons, each ending with a no-hints, no-AI transfer check. A lesson only counts once the learner passes that check on their own.
+
+1. **What counts as AI?** Sort everyday tools into ordinary software, machine learning, and generative AI; training vs. inference; fluent is not the same as true.
+2. **Can a fluent answer be wrong?** Check a polished AI answer against an official source, catching a wrong fact, an arithmetic error, and an invented citation.
+3. **Privacy before prompting:** Redact a fictional sign-up form down to only what the task needs.
+4. **Spot the hidden instruction:** Find a prompt-injection attack hidden in a document and respond safely.
+5. **Is that really your grandson?** Build a verification plan for an AI voice-clone scam.
+6. **Draft-only helper:** Set Allow / Ask a human / Block permissions for an AI agent.
+7. **Who decides?** Match situations to the right level of human and expert oversight, including the right to challenge AI decisions.
+
+Also included: learning pathways for young children, middle school, high school, adults and job seekers, older adults and families, and teachers and managers, plus a skills record with practice badges (AI-aware citizen, Responsible AI user). Progress is stored only in the learner's browser.
 
 ### Section 1: The Primary Sandbox (Ages 6–11)
 *Goal: Strip the "magic" away. AI isn't a robot brain; it's math, data, and pattern matching.*
