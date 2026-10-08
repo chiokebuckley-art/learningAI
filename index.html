@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>learningAI — Comprehensive K-12 AI Education Platform</title>
-  <meta name="description" content="Zero-cost, privacy-first K-12 AI Education Platform featuring in-browser Python WebAssembly, on-device TensorFlow.js, visual Blockly logic, and offline local LLMs.">
+  <title>learningAI — AI Education for Every Age</title>
+  <meta name="description" content="Zero-cost, privacy-first AI education for every age: a shared AI Literacy Core for everyone, plus K-12 labs featuring in-browser Python WebAssembly, on-device TensorFlow.js, visual Blockly logic, and offline local LLMs.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="css/studio.css">
   <link rel="stylesheet" href="css/socratic.css">
   <link rel="stylesheet" href="css/video-theater.css">
+  <link rel="stylesheet" href="css/literacy.css">
 </head>
 <body>
 
@@ -33,7 +34,11 @@
 
     <!-- Portal Switcher Navigation -->
     <nav class="portal-nav" aria-label="Portal Navigation">
-      <button class="nav-tab active" data-portal="sandbox">
+      <button class="nav-tab active" data-portal="literacy">
+        <span class="nav-tab-icon">🌍</span>
+        <span>AI Literacy Core (All Ages)</span>
+      </button>
+      <button class="nav-tab" data-portal="sandbox">
         <span class="nav-tab-icon">🎨</span>
         <span>The Sandbox (Ages 6–11)</span>
       </button>
@@ -79,9 +84,16 @@
     </section>
 
     <!-- ============================================================== -->
+    <!-- PORTAL 0: AI LITERACY CORE (EVERYONE)                         -->
+    <!-- ============================================================== -->
+    <section class="portal-section active" id="portalLiteracy">
+      <div id="literacyCoreRoot"></div>
+    </section>
+
+    <!-- ============================================================== -->
     <!-- PORTAL 1: THE SANDBOX (AGES 6-11)                             -->
     <!-- ============================================================== -->
-    <section class="portal-section active" id="portalSandbox">
+    <section class="portal-section" id="portalSandbox">
       
       <!-- Mascot Banner -->
       <div class="sandbox-hero">
@@ -672,6 +684,7 @@
   <script src="js/studio-smarthome.js"></script>
   <script src="js/studio-transformer.js"></script>
   <script src="js/socratic-split.js"></script>
+  <script src="js/literacy-core.js"></script>
   <script src="js/app.js"></script>
 
 </body>

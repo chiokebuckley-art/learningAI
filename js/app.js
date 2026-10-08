@@ -7,7 +7,7 @@
 
 class LearningAIApp {
   constructor() {
-    this.currentPortal = "sandbox"; // 'sandbox', 'studio', 'socratic', 'video'
+    this.currentPortal = "literacy"; // 'literacy', 'sandbox', 'studio', 'socratic'
     this.currentGrade = "grade3";   // 'grade3', 'grade4', 'grade5'
 
     this.initDOM();
@@ -19,6 +19,7 @@ class LearningAIApp {
   initDOM() {
     this.navTabs = document.querySelectorAll(".nav-tab[data-portal]");
     this.portalSections = {
+      literacy: document.getElementById("portalLiteracy"),
       sandbox: document.getElementById("portalSandbox"),
       studio: document.getElementById("portalStudio"),
       socratic: document.getElementById("portalSocratic")
