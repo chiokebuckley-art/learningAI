@@ -247,7 +247,7 @@ body {
 }
 
 /* Responsive adjustments */
-/* Four portal tabs plus header actions need ~1600px on one row; below that the tabs get their own row */
+/* Five portal tabs plus header actions need ~1600px on one row; below that the tabs get their own row */
 @media (max-width: 1600px) {
   .app-header {
     flex-wrap: wrap;

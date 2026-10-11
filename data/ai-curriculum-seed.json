@@ -1,0 +1,2785 @@
+{
+  "version": "1.0",
+  "review_date": "2026-10-11",
+  "scope": "Curated foundational curriculum; not exhaustive; implementation designs are proposals",
+  "modules": [
+    {
+      "id": "L01",
+      "title": "What AI is: inputs, rules, predictions and actions",
+      "question": "How can a machine do a task that seems intelligent?",
+      "explanation": "Begin with a task, not a robot. A spam filter receives a message and predicts whether it is unwanted. A rule-based system uses rules written by people; a learned system adjusts a mathematical model from examples. AI is the broad field; machine learning is one family of techniques within it. Generative AI produces new content rather than only assigning labels.",
+      "mechanics": "input -> representation -> computation -> output -> optional real-world action. Explicitly separate a prediction from the decision made using it. The same prediction can lead to different decisions depending on cost and policy.",
+      "lab": "Give learners 12 fictional emails. First let them write two spam rules; then show where those rules fail. Compare false alarms with missed spam.",
+      "visual": "Five connected boxes; split the output into a prediction card and a separate action switch. A side-by-side panel compares handwritten rules with learned weights.",
+      "narration": "An AI system is not magic. It turns an input into a useful output through computation. Some systems follow our rules. Others learn patterns from examples. A prediction is not yet an action: people and software decide what happens next.",
+      "misconception": "AI does not mean only chatbots. Behavior that looks intelligent does not establish consciousness.",
+      "quiz": "A system labels an email as spam. Has it necessarily deleted that email?",
+      "answer": "No. Classification and action are separate stages.",
+      "sources": [
+        55,
+        58
+      ]
+    },
+    {
+      "id": "L02",
+      "title": "Data, features and targets",
+      "question": "What does a machine learn from?",
+      "explanation": "Data is recorded evidence. A feature is an input used for a task; a label or target is an answer used in supervised training. A housing model might use area and location to predict price. If the data excludes some neighborhoods, apparent accuracy can hide uneven performance.",
+      "mechanics": "Collect with permission -> validate -> clean -> split -> document. Split training, validation and test data before fitting learned preprocessing where appropriate. Prevent the same person or near-duplicate document from appearing on both sides of an evaluation.",
+      "lab": "Build a synthetic table of home area and price. Remove a column that contains the final sale result disguised as an input. Explain why this would leak the answer.",
+      "visual": "A spreadsheet becomes three labeled trays: train, validation, test. A red duplicate card tries to cross trays and is blocked.",
+      "narration": "Examples teach the model, but examples also limit it. We reserve some data to test whether the model learned a useful pattern rather than memorizing our exercise.",
+      "misconception": "More data is not automatically better; relevance, rights, quality and coverage matter.",
+      "quiz": "Why should test answers stay hidden during development?",
+      "answer": "To reduce evaluation leakage and obtain a more honest estimate of generalization.",
+      "sources": [
+        55,
+        100
+      ]
+    },
+    {
+      "id": "L03",
+      "title": "Learning from errors",
+      "question": "How do numbers become a trained model?",
+      "explanation": "A model contains adjustable parameters. It makes a prediction, measures error with a loss function, and updates parameters to improve the training objective. Training is repeated adjustment; inference uses the resulting parameters to answer new inputs.",
+      "mechanics": "Toy model: predicted price = w * area + b. Loss measures prediction error. Gradients describe how small parameter changes affect loss; gradient descent updates parameters in a direction that reduces it. Neural networks use backpropagation to compute gradients efficiently.",
+      "lab": "Provide sliders for w and b over five synthetic points. Learners reduce error manually before pressing an optimizer button. Keep the plotted dataset visibly labeled synthetic.",
+      "visual": "A line moves closer to five dots while a loss gauge decreases. Then freeze the sliders and add one unseen dot to illustrate inference.",
+      "narration": "Learning here means changing numbers. The model guesses, measures its error and adjusts. Later, it uses those learned numbers without repeating the entire training process.",
+      "misconception": "A lower training loss does not prove better real-world usefulness or safer behavior.",
+      "quiz": "Does every chat message update the model weights?",
+      "answer": "No. Ordinary inference normally uses fixed weights; separate training or adaptation is required.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "L04",
+      "title": "Neural networks and deep learning",
+      "question": "Why connect many small computations?",
+      "explanation": "A neural network stacks learned transformations with nonlinear functions. Layers can build useful representations from simpler signals. Deep learning uses networks with multiple layers. The term neuron is a mathematical analogy, not a faithful simulation of a human brain.",
+      "mechanics": "Inputs are multiplied by weights, combined with biases and passed through activations. Repeating this across layers gives a flexible function. Training adjusts its parameters, not a handwritten rule for every possible input.",
+      "lab": "Let learners toggle a nonlinear activation in a toy classifier that must separate a nonlinear pattern. Explain that this miniature visualization is not an LLM architecture.",
+      "visual": "Three layers of numbered nodes. Highlight one calculation; replace the brain icon with a labeled mathematical network.",
+      "narration": "A network is a stack of adjustable calculations. Layers help it build useful representations. Its name comes from a loose analogy to neurons, but it is not a tiny biological brain.",
+      "misconception": "A parameter count is not an IQ score; architecture, data, training and task all matter.",
+      "quiz": "What is adjusted in training: every user input or the model parameters?",
+      "answer": "The model parameters.",
+      "sources": [
+        55
+      ]
+    },
+    {
+      "id": "L05",
+      "title": "Tokens and embeddings",
+      "question": "How does text become numbers?",
+      "explanation": "A tokenizer converts text into units called tokens and then token IDs. Tokens may be words, word pieces or other units. An embedding maps a token or larger item to a vector: a list of numbers that can encode useful relationships. An ID is a label; an embedding is a learned or computed representation.",
+      "mechanics": "Text -> tokenizer -> IDs -> embedding vectors. Tokenization depends on the chosen tokenizer. Similarity in vector space is a useful signal, not a guarantee that two passages mean the same thing or are true.",
+      "lab": "Compare an English sentence, a code snippet and another language in an actual selected tokenizer. Display the tokenizer name and version. Separately explore a synthetic 2D embedding map.",
+      "visual": "A sentence breaks into colored tiles. Each tile receives an ID, then expands into a column of numbers. Mark any 2D map as a projection, not the complete embedding.",
+      "narration": "Models do not receive words in the same way we read them. A tokenizer turns text into IDs, and embeddings turn those IDs into numerical representations. One token is not always one word.",
+      "misconception": "Do not teach a universal words-to-tokens conversion. Embedding proximity does not prove factual agreement.",
+      "quiz": "Are a token ID and an embedding the same thing?",
+      "answer": "No. An ID identifies a token; an embedding represents it numerically.",
+      "sources": [
+        55,
+        57,
+        89
+      ]
+    },
+    {
+      "id": "L06",
+      "title": "Transformers and attention",
+      "question": "How can earlier words affect the next word?",
+      "explanation": "Attention lets a model combine information from different positions in its input. Transformer blocks use attention and other learned computations to create contextual representations. Position information helps represent order. Attention is a mathematical mechanism, not conscious focus.",
+      "mechanics": "For a typical causal language model, tokenize -> embed plus position handling -> repeated transformer blocks -> scores over next-token choices -> select a token -> repeat. During causal generation the model cannot attend to future tokens that have not been generated.",
+      "lab": "Use a synthetic sentence such as \"The animal did not cross because it was tired.\" Show a schematic of contextual relationships, not a claim about an actual model attention trace.",
+      "visual": "Token tiles connected by weighted lines, then a next-token probability bar chart. Clearly label illustrative weights and not actual model internals.",
+      "narration": "The representation of a word changes with its context. Attention is one way the model mixes relevant information across positions. The result helps it score possible next tokens.",
+      "misconception": "An attention diagram is not a complete explanation of why a model answered as it did.",
+      "quiz": "Why does word order matter?",
+      "answer": "It can change meaning; models need some way to represent positional information.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "L07",
+      "title": "Pretraining, post-training and adaptation",
+      "question": "How does a base model become a helpful assistant?",
+      "explanation": "Pretraining learns broad patterns from large datasets. Post-training can include supervised examples and preference-based or reinforcement methods to shape behavior. Fine-tuning performs additional training on an existing model. A prompt or retrieved document changes the current input without necessarily changing weights.",
+      "mechanics": "Data governance -> pretraining -> held-out evaluation -> post-training -> safety and task evaluation -> deployment. For an existing-model app, start with prompting and retrieval; use fine-tuning only when evidence supports it.",
+      "lab": "Give three needs: a new company handbook, a consistent output style, and basic language ability. Ask learners to choose retrieval, possible fine-tuning, or pretraining respectively and justify limitations.",
+      "visual": "Three distinct tracks: change weights, add current context, and save external memory. Do not draw them as interchangeable.",
+      "narration": "Training changes the model. Context changes what it sees right now. Memory stores information outside the model. These can work together, but they are not the same operation.",
+      "misconception": "Fine-tuning is not a dependable substitute for a frequently updated factual database.",
+      "quiz": "Does adding a PDF to a conversation normally retrain the foundation model?",
+      "answer": "No. It generally adds context or enables retrieval.",
+      "sources": [
+        108,
+        111,
+        86
+      ]
+    },
+    {
+      "id": "L08",
+      "title": "Generating answers and reasoning",
+      "question": "Why can the same prompt produce different outputs?",
+      "explanation": "An autoregressive language model generates tokens sequentially using conditional scores. Decoding settings affect selection. Some systems allocate additional inference computation to reasoning or verification. Plausible wording is not proof of correctness.",
+      "mechanics": "Context -> token distribution -> decoding -> append token -> repeat until a stopping condition. Temperature can reshape probabilities; top-p limits selection to a probability mass. Provider implementations differ, and deterministic-looking settings do not guarantee identical outcomes in every system.",
+      "lab": "Use a simulated next-word distribution. Compare choosing the highest score with sampling. Then ask a factual question and require evidence rather than relying on fluent style.",
+      "visual": "A probability chart becomes one selected tile at a time. A separate verification lane checks claims; it is not drawn as automatic truth detection.",
+      "narration": "A model can produce different answers because selection can involve sampling. Lower randomness is not the same as higher truth. For important facts, use evidence and checks.",
+      "misconception": "Visible reasoning or a generated explanation is not a guaranteed faithful record of internal computation.",
+      "quiz": "Does temperature zero guarantee factual accuracy?",
+      "answer": "No.",
+      "sources": [
+        55,
+        100,
+        108
+      ]
+    },
+    {
+      "id": "L09",
+      "title": "Prompting and context engineering",
+      "question": "How do you give an AI a useful task?",
+      "explanation": "A good request specifies the task, relevant context, constraints and success criteria. Examples clarify desired output. Context engineering is the broader practice of selecting, organizing and budgeting everything supplied to the model, including instructions, retrieved evidence, tools and conversation history.",
+      "mechanics": "Assemble only authorized context; preserve instruction boundaries; separate source text from commands; request structured output when downstream code needs it; validate the result. The context window is finite and its maximum size does not guarantee perfect use of every detail.",
+      "lab": "Rewrite \"Help with jobs\" into a request with r\u00e9sum\u00e9 facts, location, salary criteria, evidence requirements, ranking rubric and an explicit no-submission constraint.",
+      "visual": "A packing tray fills with instruction, evidence, history and tool cards. A token-budget meter shows that low-value material crowds out useful evidence.",
+      "narration": "You do not need a magic phrase. Define the job, provide the right evidence and explain what a successful answer must contain. Keep untrusted source material separate from instructions.",
+      "misconception": "A role prompt does not give the model credentials, permissions or access it does not have.",
+      "quiz": "What should an app do if structured output fails its schema?",
+      "answer": "Reject or repair it through a bounded, validated path; do not silently trust it.",
+      "sources": [
+        63,
+        64,
+        74,
+        100
+      ]
+    },
+    {
+      "id": "L10",
+      "title": "Retrieval-augmented generation: RAG",
+      "question": "How can an AI answer from your documents?",
+      "explanation": "RAG retrieves relevant material and supplies it as context for generation. It is an open-book pattern, not retraining. A searchable collection may use embeddings, keyword search or both. A generated answer can still misinterpret sources or invent unsupported claims.",
+      "mechanics": "Ingestion: parse -> chunk -> attach metadata and permissions -> index. Query: authorize -> retrieve -> optionally rerank -> assemble evidence -> answer -> verify citation support. Carry document version and passage identifiers through every stage.",
+      "lab": "Upload fictional company policies. Ask questions with answers present, absent and contradictory. Require a source passage or an explicit statement that evidence is missing.",
+      "visual": "A question enters a library search. Three passage cards enter the model. The output points back to passage IDs, while an absent-answer route says \"not found.\"",
+      "narration": "Retrieval gives the model an open book. Search selects relevant passages; the model uses them to compose an answer. The book can be outdated, and the answer still needs checking.",
+      "misconception": "RAG reduces some knowledge-access problems but does not eliminate hallucinations or permission risks.",
+      "quiz": "If retrieval finds a similar passage, is its claim necessarily current?",
+      "answer": "No. Check dates, authority and applicability.",
+      "sources": [
+        86,
+        57,
+        100
+      ]
+    },
+    {
+      "id": "L11",
+      "title": "Tools, APIs and MCP",
+      "question": "How can a model do more than write text?",
+      "explanation": "A tool is an operation exposed to the AI system: searching, calculating or updating a record. The model requests a tool call; application code validates and executes it. An API is a software interface. MCP standardizes parts of how AI applications connect to tools and context; it is not a model or an automatic security guarantee.",
+      "mechanics": "Define tool name, description, input schema, output schema and permissions. Model proposes arguments -> validate -> authorize -> possibly confirm -> execute -> return result. MCP distinguishes host, client and server, and tools, resources and prompts.",
+      "lab": "Build read-only fake weather and calculator tools. Then add a fake email tool that refuses to send without approval of the exact recipient and message.",
+      "visual": "Model, application gate and external service are separate boxes. The arrow cannot bypass validation. Add a host/client/server inset.",
+      "narration": "The model asks to use a tool. Your application decides whether that request is valid and allowed. Connecting a tool gives capability, but it does not remove your responsibility to control access.",
+      "misconception": "A tool description is not authorization. MCP does not itself make every connected server trustworthy.",
+      "quiz": "Who should enforce permissions: the model alone or application code?",
+      "answer": "Application and service authorization controls must enforce them.",
+      "sources": [
+        74,
+        63,
+        58
+      ]
+    },
+    {
+      "id": "L12",
+      "title": "Agents, workflows and harnesses",
+      "question": "What makes an agent different from a chatbot?",
+      "explanation": "A workflow follows a largely predefined path. An agent lets the model choose more of the steps and tools toward a goal. A harness is the surrounding execution system: context assembly, tools, state, limits, checkpoints, approvals and logging. These terms vary across vendors; define them operationally in the app.",
+      "mechanics": "Bounded loop: observe -> propose -> validate -> act -> inspect result -> update state -> continue or stop. The harness applies budgets, timeouts, access controls and recovery. Durable artifacts help long-running work resume across sessions.",
+      "lab": "Compare a fixed three-step r\u00e9sum\u00e9 workflow with an agent that chooses whether it needs a job description, salary evidence or a clarification. Both must stop before submitting.",
+      "visual": "Draw the model inside a larger harness frame. Include tool registry, state, policy gate, budget meter, trace and stop button. Animate only one loop at a time.",
+      "narration": "The model is one component. An agent adds a goal-directed loop. The harness makes that loop usable by controlling tools, memory, limits and recovery. More autonomy is not automatically more useful.",
+      "misconception": "A model alone is not a complete agent. Prompts cannot replace hard execution controls.",
+      "quiz": "Where should maximum tool calls be enforced?",
+      "answer": "In the harness, not only in the prompt.",
+      "sources": [
+        63,
+        64,
+        102
+      ]
+    },
+    {
+      "id": "L13",
+      "title": "Subagents, teams and swarms",
+      "question": "When should several agents work together?",
+      "explanation": "A subagent is a delegated worker, often with its own context and tools. Teams and swarms describe multi-agent arrangements, but have no universal numerical threshold. Parallel work is useful when tasks can be separated and results checked. A large agent count can amplify cost and coordination errors.",
+      "mechanics": "Plan dependency graph -> define worker contracts -> dispatch independent tasks -> collect provenance -> resolve conflicts -> synthesize -> verify. Bound concurrency and total cost. A shared queue needs ownership and duplicate-work prevention.",
+      "lab": "Assign three agents to research three fictional employers from provided documents. Deliberately give one worker a stale document and require the coordinator to catch the conflict.",
+      "visual": "A lead fans out to three workers, then merges evidence into a checked summary. Contrast with dependent tasks that must stay sequential.",
+      "narration": "Many workers help when work can happen independently. They do not turn a wrong assumption into a true one. The coordinator must track sources, disagreements and missing results.",
+      "misconception": "Multiple agents using the same model and sources are not necessarily independent evidence.",
+      "quiz": "Would ten workers make a password-reset step ten times faster?",
+      "answer": "Not necessarily; sequential dependencies and external limits can dominate.",
+      "sources": [
+        63,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "L14",
+      "title": "Multimodal AI, images, audio and video",
+      "question": "How can AI work with more than text?",
+      "explanation": "Multimodal systems accept or generate more than one kind of data. Vision models process images; speech systems transcribe or synthesize audio. Diffusion models learn to reverse a noise-corruption process to generate samples. Not all image or video models use the same architecture.",
+      "mechanics": "Distinguish understanding media from generating it. For diffusion teaching, show clean training example -> noise levels -> learned denoising objective, then a separate generation sequence from noise -> sample. Video also requires consistency across time.",
+      "lab": "Ask learners to describe a chart and identify unreadable labels. Then generate a nontechnical illustration and add accurate labels using deterministic layout code.",
+      "visual": "Two panels: training adds noise to an example; generation starts from noise and iteratively forms a sample. Keep them distinct. A video strip shows temporal continuity.",
+      "narration": "Image generation learns patterns from examples. A diffusion model can generate a new sample by repeatedly refining noise. This is not simply searching for and copying a finished image.",
+      "misconception": "Do not claim every image generator is diffusion or every generated detail is grounded in reality.",
+      "quiz": "Why should exact technical labels be drawn with code or design tools?",
+      "answer": "To control spelling, placement and technical accuracy.",
+      "sources": [
+        75,
+        79
+      ]
+    },
+    {
+      "id": "L15",
+      "title": "Evaluating quality, reliability and safety",
+      "question": "How do we know an AI system is good enough?",
+      "explanation": "Evals are structured tests tied to a real task. Measure correctness, evidence support, task completion, cost and latency separately. Test ordinary, difficult and adversarial cases. Model-based graders can help but require calibration against human judgments.",
+      "mechanics": "Define objective -> assemble held-out cases -> select metrics and rubrics -> run repeated trials where needed -> compare versions -> inspect failures -> regression test. Agent traces also reveal wrong tools, missing approvals and looping.",
+      "lab": "Create 20 fictional job-search cases: matches, disqualifying requirements, missing salary, stale listings, injected instructions and approval denial. Score outputs with an explicit rubric.",
+      "visual": "A test conveyor routes cases to correct, unsupported, unsafe-action and timeout bins. A dashboard shows several metrics rather than one magic score.",
+      "narration": "A convincing demo is not a reliability test. Write down what success means, test difficult cases and inspect failures. Check both the answer and the actions that produced it.",
+      "misconception": "An LLM grader is not automatically ground truth. A benchmark score is not a guarantee for your app.",
+      "quiz": "Can a system be factually correct but still fail the task?",
+      "answer": "Yes; it can violate permissions, format, latency or action constraints.",
+      "sources": [
+        100,
+        102,
+        58
+      ]
+    },
+    {
+      "id": "L16",
+      "title": "Building and operating an AI application",
+      "question": "How do all the pieces fit together?",
+      "explanation": "An AI app combines a user interface, application logic, model access, data retrieval, tools and operational controls. Using a hosted foundation model is different from training one. Production engineering must handle secrets, permissions, privacy, retries, monitoring and versioned content.",
+      "mechanics": "Client -> authenticated backend -> policy/context layer -> model gateway -> approved tools/retrieval -> validation -> user response. Store source-grounded curriculum in a content system; keep generation, learner records and secrets in separate controlled services.",
+      "lab": "Build a read-only tutor over three approved lessons. Add a concept graph, a quiz and source display. Only then add tools and bounded agent behavior after evals pass.",
+      "visual": "A layered architecture diagram with trust boundaries, a source registry, an evaluation pipeline and a human approval gate for writes.",
+      "narration": "The model does not replace the application. Your backend controls access, supplies evidence, checks outputs and records what happened. Start simple, then add autonomy only when measured benefits justify it.",
+      "misconception": "An API key must not be shipped in client-side code. A prototype is not production-ready because one demo worked.",
+      "quiz": "What should happen when a provider call times out?",
+      "answer": "Use bounded retries or a clear fallback; avoid duplicate side effects and communicate the failure.",
+      "sources": [
+        63,
+        64,
+        74,
+        100,
+        58
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "id": "T001",
+      "category": "Foundations",
+      "term": "Artificial intelligence",
+      "definition": "The broad field of building systems that perform tasks associated with intelligence; not synonymous with LLMs.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T002",
+      "category": "Foundations",
+      "term": "Machine learning",
+      "definition": "Methods that fit models from data rather than specifying every decision rule manually.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T003",
+      "category": "Foundations",
+      "term": "Deep learning",
+      "definition": "Machine learning using multi-layer neural networks.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T004",
+      "category": "Foundations",
+      "term": "Generative AI",
+      "definition": "Systems that produce new text, images, audio or other content from learned patterns and conditioning.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T005",
+      "category": "Foundations",
+      "term": "Predictive model",
+      "definition": "A model that estimates a target, such as price, class or probability.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T006",
+      "category": "Foundations",
+      "term": "Symbolic AI",
+      "definition": "AI built around explicit symbols, rules and reasoning procedures.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T007",
+      "category": "Foundations",
+      "term": "Rule-based system",
+      "definition": "A system that applies human-written conditional rules.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T008",
+      "category": "Foundations",
+      "term": "Model",
+      "definition": "A computational mapping from inputs to outputs; distinguish its architecture from its learned parameters.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T009",
+      "category": "Foundations",
+      "term": "Algorithm",
+      "definition": "A specified procedure for computation or decision-making.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T010",
+      "category": "Foundations",
+      "term": "Architecture",
+      "definition": "The structural design of a model or application; the intended meaning depends on context.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T011",
+      "category": "Foundations",
+      "term": "Parameter / weight",
+      "definition": "A learned numerical value inside a model; not the same as a user setting.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T012",
+      "category": "Foundations",
+      "term": "Hyperparameter",
+      "definition": "A training or configuration setting such as learning rate, chosen outside ordinary parameter fitting.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T013",
+      "category": "Foundations",
+      "term": "Feature",
+      "definition": "An input attribute or representation used by a model.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T014",
+      "category": "Foundations",
+      "term": "Label / target",
+      "definition": "The expected output used in supervised learning.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T015",
+      "category": "Foundations",
+      "term": "Classification",
+      "definition": "Predicting a discrete category, such as spam or not spam.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T016",
+      "category": "Foundations",
+      "term": "Regression",
+      "definition": "Predicting a numerical quantity, such as price.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T017",
+      "category": "Foundations",
+      "term": "Clustering",
+      "definition": "Grouping examples by similarity without predefined class labels.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T018",
+      "category": "Foundations",
+      "term": "Supervised learning",
+      "definition": "Learning from input-output examples.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T019",
+      "category": "Foundations",
+      "term": "Unsupervised learning",
+      "definition": "Learning structure without ordinary labeled target answers.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T020",
+      "category": "Foundations",
+      "term": "Self-supervised learning",
+      "definition": "Creating a training objective from the data itself, such as predicting withheld or next tokens.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T021",
+      "category": "Foundations",
+      "term": "Reinforcement learning",
+      "definition": "Learning behavior using feedback expressed as rewards over actions or outcomes.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T022",
+      "category": "Foundations",
+      "term": "Generalization",
+      "definition": "Performance on relevant examples beyond those used to fit the model.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T023",
+      "category": "Foundations",
+      "term": "Overfitting",
+      "definition": "Learning training-specific patterns that fail to transfer to new data.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T024",
+      "category": "Foundations",
+      "term": "Underfitting",
+      "definition": "A model or training process fails to capture important task patterns.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T025",
+      "category": "Foundations",
+      "term": "Distribution shift",
+      "definition": "A meaningful change between training or evaluation data and actual inputs.",
+      "sources": [
+        55,
+        108
+      ]
+    },
+    {
+      "id": "T026",
+      "category": "Training and model internals",
+      "term": "Dataset",
+      "definition": "A collection of examples with associated metadata and, when applicable, labels.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T027",
+      "category": "Training and model internals",
+      "term": "Training set",
+      "definition": "Data used to adjust model parameters.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T028",
+      "category": "Training and model internals",
+      "term": "Validation set",
+      "definition": "Data used for development choices; repeated use can itself bias decisions.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T029",
+      "category": "Training and model internals",
+      "term": "Test set",
+      "definition": "Held-out data intended for final or independent evaluation.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T030",
+      "category": "Training and model internals",
+      "term": "Data leakage",
+      "definition": "Information improperly crosses into training or evaluation, making performance look better than it is.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T031",
+      "category": "Training and model internals",
+      "term": "Loss function",
+      "definition": "A numerical objective measuring errors or preferences during training.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T032",
+      "category": "Training and model internals",
+      "term": "Gradient",
+      "definition": "How a quantity changes with respect to parameters; used to guide updates.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T033",
+      "category": "Training and model internals",
+      "term": "Gradient descent",
+      "definition": "A family of optimization methods using gradients to adjust parameters.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T034",
+      "category": "Training and model internals",
+      "term": "Backpropagation",
+      "definition": "Efficiently computing gradients through a network using the chain rule.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T035",
+      "category": "Training and model internals",
+      "term": "Optimizer",
+      "definition": "The algorithm that applies parameter updates during training.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T036",
+      "category": "Training and model internals",
+      "term": "Learning rate",
+      "definition": "A setting controlling the size of training updates.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T037",
+      "category": "Training and model internals",
+      "term": "Batch",
+      "definition": "A group of examples processed together.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T038",
+      "category": "Training and model internals",
+      "term": "Epoch",
+      "definition": "One pass through a training dataset, where that notion applies.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T039",
+      "category": "Training and model internals",
+      "term": "Checkpoint",
+      "definition": "Saved model or run state used for recovery, comparison or deployment.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T040",
+      "category": "Training and model internals",
+      "term": "Pretraining",
+      "definition": "Initial broad training of a model, commonly on large datasets.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T041",
+      "category": "Training and model internals",
+      "term": "Post-training",
+      "definition": "Training after pretraining to improve behaviors or capabilities.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T042",
+      "category": "Training and model internals",
+      "term": "Fine-tuning",
+      "definition": "Additional training of an existing model on chosen data or objectives.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T043",
+      "category": "Training and model internals",
+      "term": "SFT",
+      "definition": "Supervised fine-tuning: adapting a model using desired input-output examples.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T044",
+      "category": "Training and model internals",
+      "term": "RLHF",
+      "definition": "Reinforcement learning from human feedback; a family of techniques, not all post-training.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T045",
+      "category": "Training and model internals",
+      "term": "DPO",
+      "definition": "Direct preference optimization: a preference-based training method rather than a synonym for RLHF.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T046",
+      "category": "Training and model internals",
+      "term": "LoRA",
+      "definition": "Low-rank adaptation: fine-tuning a relatively small set of added low-rank parameters.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T047",
+      "category": "Training and model internals",
+      "term": "Distillation",
+      "definition": "Training a student model using supervision from a teacher system.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T048",
+      "category": "Training and model internals",
+      "term": "Quantization",
+      "definition": "Representing model values at lower numerical precision to reduce resource needs; quality and speed effects vary.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T049",
+      "category": "Training and model internals",
+      "term": "Pruning",
+      "definition": "Removing selected model components or connections to reduce resources.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T050",
+      "category": "Training and model internals",
+      "term": "GPU",
+      "definition": "A processor suited to highly parallel computation, widely used for model training and inference.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T051",
+      "category": "Training and model internals",
+      "term": "VRAM",
+      "definition": "Memory on a graphics processor; model weights, activations and caches consume it.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T052",
+      "category": "Training and model internals",
+      "term": "Tensor",
+      "definition": "A multidimensional numerical array used in model computation.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T053",
+      "category": "Training and model internals",
+      "term": "Activation",
+      "definition": "An intermediate computed value; also used to refer to a nonlinear activation function.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T054",
+      "category": "Training and model internals",
+      "term": "Inference",
+      "definition": "Running a trained model to produce outputs; not necessarily updating its weights.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T055",
+      "category": "Training and model internals",
+      "term": "Serving",
+      "definition": "Operating infrastructure that delivers inference responses to clients.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T056",
+      "category": "Training and model internals",
+      "term": "Foundation model",
+      "definition": "A broadly trained model that can be adapted to many downstream tasks.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T057",
+      "category": "Training and model internals",
+      "term": "Open weights",
+      "definition": "Model parameters are available under stated terms; this does not automatically mean fully open source.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T058",
+      "category": "Training and model internals",
+      "term": "Model card",
+      "definition": "Documentation of a model's intended uses, limitations, provenance and evaluations.",
+      "sources": [
+        55,
+        108,
+        111
+      ]
+    },
+    {
+      "id": "T059",
+      "category": "Language and context",
+      "term": "LLM",
+      "definition": "Large language model: a language-focused model trained at substantial scale; large has no universal cutoff.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T060",
+      "category": "Language and context",
+      "term": "SLM",
+      "definition": "Small language model: a relative size label without a fixed industry threshold.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T061",
+      "category": "Language and context",
+      "term": "Tokenizer",
+      "definition": "The procedure and vocabulary that convert content into model input units.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T062",
+      "category": "Language and context",
+      "term": "Token",
+      "definition": "A model input or output unit; it is not universally a word.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T063",
+      "category": "Language and context",
+      "term": "Token ID",
+      "definition": "An integer identifier for a vocabulary item.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T064",
+      "category": "Language and context",
+      "term": "Embedding",
+      "definition": "A vector representation that can encode useful relationships between items.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T065",
+      "category": "Language and context",
+      "term": "Vector",
+      "definition": "An ordered list of numbers; often used as a representation.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T066",
+      "category": "Language and context",
+      "term": "Dimension",
+      "definition": "One component of a vector or axis in a representation space.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T067",
+      "category": "Language and context",
+      "term": "Transformer",
+      "definition": "A model architecture family built around attention and other learned transformations.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T068",
+      "category": "Language and context",
+      "term": "Attention",
+      "definition": "A mechanism that weights and combines information from input positions.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T069",
+      "category": "Language and context",
+      "term": "Self-attention",
+      "definition": "Attention among positions in the same sequence.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T070",
+      "category": "Language and context",
+      "term": "Positional encoding",
+      "definition": "A way to represent position or order; implementations vary.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T071",
+      "category": "Language and context",
+      "term": "Encoder",
+      "definition": "A component that maps inputs to representations; architecture-specific.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T072",
+      "category": "Language and context",
+      "term": "Decoder",
+      "definition": "A component that produces outputs from representations or prior outputs; architecture-specific.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T073",
+      "category": "Language and context",
+      "term": "Autoregressive generation",
+      "definition": "Generating outputs sequentially conditioned on earlier outputs.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T074",
+      "category": "Language and context",
+      "term": "Logits",
+      "definition": "Unnormalized output scores before conversion to probabilities.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T075",
+      "category": "Language and context",
+      "term": "Softmax",
+      "definition": "A function converting scores into a normalized probability distribution.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T076",
+      "category": "Language and context",
+      "term": "Temperature",
+      "definition": "A decoding setting that reshapes a distribution; not a truth control.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T077",
+      "category": "Language and context",
+      "term": "Top-p",
+      "definition": "A sampling strategy restricting choices to a cumulative probability mass.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T078",
+      "category": "Language and context",
+      "term": "Context window",
+      "definition": "The maximum supported context budget under a model's rules, not a guarantee of perfect recall.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T079",
+      "category": "Language and context",
+      "term": "Prompt",
+      "definition": "Input content and instructions supplied to a model.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T080",
+      "category": "Language and context",
+      "term": "System instruction",
+      "definition": "Application-level instructions supplied through a privileged message channel where supported.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T081",
+      "category": "Language and context",
+      "term": "Few-shot prompting",
+      "definition": "Providing a small number of examples in the prompt.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T082",
+      "category": "Language and context",
+      "term": "Zero-shot prompting",
+      "definition": "Requesting a task without task demonstrations in the prompt.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T083",
+      "category": "Language and context",
+      "term": "Prompt engineering",
+      "definition": "Designing instructions and examples to improve model behavior.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T084",
+      "category": "Language and context",
+      "term": "Context engineering",
+      "definition": "Selecting and organizing instructions, evidence, history and tool information for a run; usage varies.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T085",
+      "category": "Language and context",
+      "term": "Structured output",
+      "definition": "Output constrained or validated to follow a schema.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T086",
+      "category": "Language and context",
+      "term": "JSON schema",
+      "definition": "A formal description of the shape and constraints of JSON data.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T087",
+      "category": "Language and context",
+      "term": "Reasoning model",
+      "definition": "A product or model category emphasizing multi-step problem solving, often with added inference computation.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T088",
+      "category": "Language and context",
+      "term": "Chain of thought",
+      "definition": "A sequence of intermediate reasoning text; not necessarily a faithful or accessible internal trace.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T089",
+      "category": "Language and context",
+      "term": "Test-time compute",
+      "definition": "Additional computation spent during inference to improve results.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T090",
+      "category": "Language and context",
+      "term": "Hallucination / confabulation",
+      "definition": "Generated content that is false, invented or unsupported in the relevant context.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T091",
+      "category": "Language and context",
+      "term": "Grounding",
+      "definition": "Connecting outputs to specified evidence, data or observations.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T092",
+      "category": "Language and context",
+      "term": "Sycophancy",
+      "definition": "Over-agreeing with a user or preference rather than maintaining accuracy.",
+      "sources": [
+        55,
+        57,
+        89,
+        108
+      ]
+    },
+    {
+      "id": "T093",
+      "category": "Retrieval and memory",
+      "term": "RAG",
+      "definition": "Retrieval-augmented generation: use retrieved material as input to a generative model.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T094",
+      "category": "Retrieval and memory",
+      "term": "Corpus",
+      "definition": "The collection of documents or records available for search.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T095",
+      "category": "Retrieval and memory",
+      "term": "Ingestion",
+      "definition": "Processing source content into a searchable or usable form.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T096",
+      "category": "Retrieval and memory",
+      "term": "Parsing",
+      "definition": "Extracting structured content from input formats.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T097",
+      "category": "Retrieval and memory",
+      "term": "Chunking",
+      "definition": "Dividing material into units for retrieval or processing.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T098",
+      "category": "Retrieval and memory",
+      "term": "Chunk overlap",
+      "definition": "Shared content between adjacent chunks; a tunable tradeoff rather than a universal requirement.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T099",
+      "category": "Retrieval and memory",
+      "term": "Metadata",
+      "definition": "Information about content, such as owner, date, version or permissions.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T100",
+      "category": "Retrieval and memory",
+      "term": "Vector database / store",
+      "definition": "Storage and indexing for vectors and associated records.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T101",
+      "category": "Retrieval and memory",
+      "term": "Semantic search",
+      "definition": "Searching by representation-based meaning similarity rather than only exact words.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T102",
+      "category": "Retrieval and memory",
+      "term": "Keyword search",
+      "definition": "Retrieval based on words or lexical matches.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T103",
+      "category": "Retrieval and memory",
+      "term": "Hybrid search",
+      "definition": "Combining lexical and semantic retrieval signals.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T104",
+      "category": "Retrieval and memory",
+      "term": "Reranking",
+      "definition": "Reordering retrieved candidates with another relevance-scoring stage.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T105",
+      "category": "Retrieval and memory",
+      "term": "Cosine similarity",
+      "definition": "A measure based on the angle between vectors; similarity is not truth.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T106",
+      "category": "Retrieval and memory",
+      "term": "Knowledge graph",
+      "definition": "Entities and relationships represented as a graph; not the same as a vector store.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T107",
+      "category": "Retrieval and memory",
+      "term": "Citation",
+      "definition": "An identifiable link from a claim to supporting source material; its support must be checked.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T108",
+      "category": "Retrieval and memory",
+      "term": "Provenance",
+      "definition": "The recorded origin and transformation history of information.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T109",
+      "category": "Retrieval and memory",
+      "term": "Conversation history",
+      "definition": "Prior messages available to the current run, subject to selection or truncation.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T110",
+      "category": "Retrieval and memory",
+      "term": "External memory",
+      "definition": "Persisted information outside model weights, retrieved when needed.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T111",
+      "category": "Retrieval and memory",
+      "term": "Compaction / summarization",
+      "definition": "Compressing context to preserve useful information; details may be lost.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T112",
+      "category": "Retrieval and memory",
+      "term": "Cache",
+      "definition": "Stored results or reusable computation that can reduce repeated work.",
+      "sources": [
+        86,
+        57,
+        64
+      ]
+    },
+    {
+      "id": "T113",
+      "category": "Agents and integrations",
+      "term": "Agent",
+      "definition": "A system where a model directs some goal-oriented steps and tool use; autonomy varies.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T114",
+      "category": "Agents and integrations",
+      "term": "Agentic",
+      "definition": "Describes model-directed planning or action; a loose adjective, not a certification.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T115",
+      "category": "Agents and integrations",
+      "term": "Workflow",
+      "definition": "A largely predefined arrangement of steps, including possible model calls.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T116",
+      "category": "Agents and integrations",
+      "term": "Harness",
+      "definition": "The execution environment around a model or agent: tools, state, controls, budgets and recovery.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T117",
+      "category": "Agents and integrations",
+      "term": "Agent loop",
+      "definition": "Repeated observation, decision, action and result inspection until stopping.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T118",
+      "category": "Agents and integrations",
+      "term": "Tool",
+      "definition": "An operation callable by the AI application, such as search or database lookup.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T119",
+      "category": "Agents and integrations",
+      "term": "Tool calling / function calling",
+      "definition": "The model requests a named operation with structured arguments; the application executes it.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T120",
+      "category": "Agents and integrations",
+      "term": "API",
+      "definition": "An application programming interface through which software exchanges requests and results.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T121",
+      "category": "Agents and integrations",
+      "term": "SDK",
+      "definition": "A software development kit providing reusable interfaces and helpers.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T122",
+      "category": "Agents and integrations",
+      "term": "MCP",
+      "definition": "Model Context Protocol: a standard for connecting AI applications to external context and tools.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T123",
+      "category": "Agents and integrations",
+      "term": "MCP host",
+      "definition": "The AI application coordinating MCP connections.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T124",
+      "category": "Agents and integrations",
+      "term": "MCP client",
+      "definition": "A connection component inside the host communicating with a server.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T125",
+      "category": "Agents and integrations",
+      "term": "MCP server",
+      "definition": "A service exposing MCP capabilities.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T126",
+      "category": "Agents and integrations",
+      "term": "MCP resource",
+      "definition": "Contextual data exposed by a server.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T127",
+      "category": "Agents and integrations",
+      "term": "MCP prompt",
+      "definition": "A reusable message template or interaction pattern exposed by a server.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T128",
+      "category": "Agents and integrations",
+      "term": "Connector",
+      "definition": "An integration with an external service; permission and scope still matter.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T129",
+      "category": "Agents and integrations",
+      "term": "Skill",
+      "definition": "A reusable capability package or instructions; format and behavior are vendor-specific.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T130",
+      "category": "Agents and integrations",
+      "term": "Subagent",
+      "definition": "A delegated worker agent, often with a separate context.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T131",
+      "category": "Agents and integrations",
+      "term": "Orchestrator",
+      "definition": "The coordinating component that allocates and combines work.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T132",
+      "category": "Agents and integrations",
+      "term": "Multi-agent system",
+      "definition": "A system with multiple interacting agents or workers.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T133",
+      "category": "Agents and integrations",
+      "term": "Agent team",
+      "definition": "A multi-agent arrangement with task coordination; the exact meaning varies by product.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T134",
+      "category": "Agents and integrations",
+      "term": "Agent swarm",
+      "definition": "A loosely defined multi-agent arrangement, often emphasizing parallelism and dynamic delegation.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T135",
+      "category": "Agents and integrations",
+      "term": "Handoff",
+      "definition": "Transfer of task control or context to another component or agent.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T136",
+      "category": "Agents and integrations",
+      "term": "Parallelism",
+      "definition": "Running independent work at the same time.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T137",
+      "category": "Agents and integrations",
+      "term": "Dependency graph",
+      "definition": "A graph showing which tasks require outputs of other tasks.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T138",
+      "category": "Agents and integrations",
+      "term": "Browser automation",
+      "definition": "Programmatic interaction with web pages; permissions, forms and site restrictions still apply.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T139",
+      "category": "Agents and integrations",
+      "term": "Computer use",
+      "definition": "Interaction through interfaces such as screenshots, mouse and keyboard rather than only APIs.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T140",
+      "category": "Agents and integrations",
+      "term": "Sandbox",
+      "definition": "An isolated execution environment limiting access and consequences.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T141",
+      "category": "Agents and integrations",
+      "term": "Human-in-the-loop",
+      "definition": "A design where people review or participate at defined decision points.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T142",
+      "category": "Agents and integrations",
+      "term": "Approval gate",
+      "definition": "A required authorization step before a particular action.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T143",
+      "category": "Agents and integrations",
+      "term": "Idempotency",
+      "definition": "A property or mechanism preventing repeated requests from causing duplicate effects.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T144",
+      "category": "Agents and integrations",
+      "term": "Checkpoint / resume",
+      "definition": "Saving task state and recovering work after interruptions.",
+      "sources": [
+        63,
+        64,
+        74,
+        102
+      ]
+    },
+    {
+      "id": "T145",
+      "category": "Quality, security and operations",
+      "term": "Evaluation / eval",
+      "definition": "A structured test of model or application behavior against criteria.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T146",
+      "category": "Quality, security and operations",
+      "term": "Benchmark",
+      "definition": "A standardized evaluation collection; its relevance to an app must be assessed.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T147",
+      "category": "Quality, security and operations",
+      "term": "Golden set",
+      "definition": "A curated collection of trusted test cases and expected judgments.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T148",
+      "category": "Quality, security and operations",
+      "term": "Rubric",
+      "definition": "Explicit criteria for scoring an output or behavior.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T149",
+      "category": "Quality, security and operations",
+      "term": "Regression test",
+      "definition": "A test that detects whether a change breaks previously acceptable behavior.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T150",
+      "category": "Quality, security and operations",
+      "term": "Red teaming",
+      "definition": "Deliberate adversarial testing to expose failures or risks.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T151",
+      "category": "Quality, security and operations",
+      "term": "LLM-as-judge",
+      "definition": "Using a model to grade outputs, with human calibration and bias checks.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T152",
+      "category": "Quality, security and operations",
+      "term": "Precision",
+      "definition": "Of the positive predictions, the fraction that are correct.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T153",
+      "category": "Quality, security and operations",
+      "term": "Recall",
+      "definition": "Of the true positive cases, the fraction the system found.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T154",
+      "category": "Quality, security and operations",
+      "term": "Calibration",
+      "definition": "How well estimated probabilities match observed frequencies; fluent confidence is different.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T155",
+      "category": "Quality, security and operations",
+      "term": "Latency",
+      "definition": "Time taken to produce a response or complete a task.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T156",
+      "category": "Quality, security and operations",
+      "term": "Throughput",
+      "definition": "Work completed per unit time.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T157",
+      "category": "Quality, security and operations",
+      "term": "Time to first token",
+      "definition": "Delay before the first generated token arrives; not total task duration.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T158",
+      "category": "Quality, security and operations",
+      "term": "Rate limit",
+      "definition": "A service-imposed bound on request or resource use.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T159",
+      "category": "Quality, security and operations",
+      "term": "Observability",
+      "definition": "Visibility into system behavior through logs, metrics and traces.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T160",
+      "category": "Quality, security and operations",
+      "term": "Trace",
+      "definition": "An ordered record of a run's model calls, tools, handoffs and outcomes.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T161",
+      "category": "Quality, security and operations",
+      "term": "Guardrail",
+      "definition": "A control intended to restrict undesirable behavior; not a guarantee of safety.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T162",
+      "category": "Quality, security and operations",
+      "term": "Prompt injection",
+      "definition": "Untrusted content attempts to redirect the system or override intended instructions.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T163",
+      "category": "Quality, security and operations",
+      "term": "Jailbreak",
+      "definition": "An attempt to bypass intended model behavior constraints.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T164",
+      "category": "Quality, security and operations",
+      "term": "Data exfiltration",
+      "definition": "Unauthorized disclosure or transfer of data.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T165",
+      "category": "Quality, security and operations",
+      "term": "PII",
+      "definition": "Personally identifiable information; definitions vary by context and jurisdiction.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T166",
+      "category": "Quality, security and operations",
+      "term": "Least privilege",
+      "definition": "Grant only the access required for a task.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T167",
+      "category": "Quality, security and operations",
+      "term": "Authorization",
+      "definition": "Deciding what an authenticated entity may do.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T168",
+      "category": "Quality, security and operations",
+      "term": "Authentication",
+      "definition": "Establishing the identity of a user or service.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T169",
+      "category": "Quality, security and operations",
+      "term": "Audit log",
+      "definition": "A record used to review access, decisions and actions.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T170",
+      "category": "Quality, security and operations",
+      "term": "Model drift",
+      "definition": "A change in behavior or performance over time; causes may include data, model or system changes.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T171",
+      "category": "Quality, security and operations",
+      "term": "Model routing",
+      "definition": "Choosing among models or configurations based on task and constraints.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T172",
+      "category": "Quality, security and operations",
+      "term": "Fallback",
+      "definition": "An alternative path when a preferred component fails.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T173",
+      "category": "Quality, security and operations",
+      "term": "Streaming",
+      "definition": "Returning incremental output as it becomes available.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T174",
+      "category": "Quality, security and operations",
+      "term": "Batch processing",
+      "definition": "Processing multiple items together, often without immediate interactive responses.",
+      "sources": [
+        58,
+        59,
+        100,
+        102
+      ]
+    },
+    {
+      "id": "T175",
+      "category": "Media and emerging language",
+      "term": "Multimodal",
+      "definition": "Processing or generating multiple modalities such as text, image and audio.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T176",
+      "category": "Media and emerging language",
+      "term": "Computer vision",
+      "definition": "Methods for extracting information from visual inputs.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T177",
+      "category": "Media and emerging language",
+      "term": "OCR",
+      "definition": "Optical character recognition: extracting text from images or scans.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T178",
+      "category": "Media and emerging language",
+      "term": "ASR / speech-to-text",
+      "definition": "Automatic speech recognition converting spoken audio to text.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T179",
+      "category": "Media and emerging language",
+      "term": "TTS / text-to-speech",
+      "definition": "Generating spoken audio from text.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T180",
+      "category": "Media and emerging language",
+      "term": "Diffusion model",
+      "definition": "A generative model family learning a reverse process associated with data corruption by noise.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T181",
+      "category": "Media and emerging language",
+      "term": "Denoising",
+      "definition": "Estimating or reducing noise in a signal; used iteratively in diffusion sampling.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T182",
+      "category": "Media and emerging language",
+      "term": "Latent space",
+      "definition": "A learned representation space, often more compact than raw data.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T183",
+      "category": "Media and emerging language",
+      "term": "VAE",
+      "definition": "Variational autoencoder: a probabilistic encoder-decoder model, used in some latent-generation pipelines.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T184",
+      "category": "Media and emerging language",
+      "term": "GAN",
+      "definition": "Generative adversarial network: a generator and discriminator trained through competing objectives.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T185",
+      "category": "Media and emerging language",
+      "term": "Guidance",
+      "definition": "Conditioning or sampling techniques that steer generation toward desired attributes.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T186",
+      "category": "Media and emerging language",
+      "term": "Image-to-image",
+      "definition": "Generating or editing images using an input image as conditioning.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T187",
+      "category": "Media and emerging language",
+      "term": "Inpainting",
+      "definition": "Generating or replacing content within a selected image region.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T188",
+      "category": "Media and emerging language",
+      "term": "Outpainting",
+      "definition": "Extending generated content beyond the existing image boundaries.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T189",
+      "category": "Media and emerging language",
+      "term": "Temporal consistency",
+      "definition": "Coherence of identity, structure and motion across video frames.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T190",
+      "category": "Media and emerging language",
+      "term": "Keyframe",
+      "definition": "A specified frame or state guiding animation or a visual sequence.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T191",
+      "category": "Media and emerging language",
+      "term": "Storyboard",
+      "definition": "A sequence of planned shots, visuals and narration.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T192",
+      "category": "Media and emerging language",
+      "term": "Seed",
+      "definition": "An initializer for pseudorandom behavior; reproducibility also depends on the system.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T193",
+      "category": "Media and emerging language",
+      "term": "MoE",
+      "definition": "Mixture of experts: a model architecture that routes computation among expert components; not an agent swarm.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T194",
+      "category": "Media and emerging language",
+      "term": "AGI",
+      "definition": "Artificial general intelligence: a debated label for broadly capable intelligence, without one agreed test.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T195",
+      "category": "Media and emerging language",
+      "term": "ASI",
+      "definition": "Artificial superintelligence: a hypothetical capability category beyond human levels across broad domains.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T196",
+      "category": "Media and emerging language",
+      "term": "Vibe coding",
+      "definition": "An informal phrase for generating software conversationally; it does not replace testing or code review.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    },
+    {
+      "id": "T197",
+      "category": "Media and emerging language",
+      "term": "Digital twin",
+      "definition": "A representation of a real system maintained for analysis or simulation; not inherently generative AI.",
+      "sources": [
+        75,
+        79,
+        58
+      ]
+    }
+  ],
+  "implementation_sections": [
+    {
+      "title": "1. Scope, research basis and editorial contract",
+      "paragraphs": [
+        "This is a vendor-neutral curriculum and implementation blueprint for an app that teaches what AI is, how to use it and how it is built. Audience: curious beginners, practical users and developers. Date: October 11, 2026. This is a curated foundational taxonomy, not a claim to list every AI term or every current product.",
+        "Evidence basis: public educational and engineering sources from Google, Hugging Face, Anthropic, OpenAI, the Model Context Protocol project, NIST and W3C. Technical explanations synthesize those sources. Lesson sequencing, exercises, architecture choices, visual briefs, suggested metrics and launch gates are proposed designs, not claims of experimentally validated learning outcomes.",
+        "Keep enduring mechanisms separate from provider-specific features. Do not hardcode agent counts, subscription limits or model rankings into foundational lessons. Verify current provider documentation before implementing endpoints. The blueprint does not rely on the earlier conversation's Kimi, Grok or ChatGPT product comparisons.",
+        "Terminology policy: definitions of agent, harness, skill, swarm, reasoning model, SLM and context engineering are operational teaching definitions. Display an \"industry usage varies\" badge. Open weights and open source must remain separate. AGI and ASI belong in a clearly labeled debated or hypothetical category.",
+        "First-principles teaching ladder: task -> data -> representation -> adjustable function -> error signal -> learning -> inference -> evidence -> tools -> bounded actions -> multi-agent coordination -> evaluation. Never introduce a swarm before the learner understands one bounded agent. [web:55][web:63][web:64][web:58]"
+      ]
+    },
+    {
+      "title": "2. Learning paths and content architecture",
+      "paragraphs": [
+        "Path A, Understand AI: lessons L01-L08, with optional mathematical drawers. Outcomes: distinguish AI from ML, describe training versus inference, explain tokens and attention, and recognize unsupported claims.",
+        "Path B, Use AI well: L09-L15, preceded by L01, L05 and L08. Outcomes: write evidence-aware requests, use retrieval and tools appropriately, inspect agent actions and verify results.",
+        "Path C, Build AI applications: L02-L16 plus architecture, evaluation and security sections. Outcomes: assemble a safe read-only tutor, implement schemas and permissions, evaluate behavior and add bounded tool use.",
+        "Path D, Build models: expand L03-L07 into a separate technical track using small public or synthetic datasets. Outcomes: fit a baseline, train a tiny model, compare held-out performance and document limits. Training a frontier foundation model is not an introductory app exercise. [web:111]",
+        "Recommended lesson rhythm: one question; one plain-language explanation; one mechanical walkthrough; one analogy with a limitation; one diagram; one optional short video; one interactive exercise; two checks; one real-world use; sources and update date. Suggested duration is a design estimate, not a measured result: 5-10 minutes per micro-lesson, with deeper labs separate.",
+        "Concept graph: learning requires data, parameters and loss; transformers require tokens, embeddings and position; RAG requires retrieval, context and provenance; agents require tools, state and stopping; swarms require agents, delegation and verification. Store these as explicit prerequisite edges.",
+        "Offer three views of each concept: \"In plain language\", \"What actually happens\" and \"Developer details\". Do not require beginners to decode equations before they can understand the purpose. Let users switch views without losing their place."
+      ]
+    },
+    {
+      "title": "3. The core mental model and important non-equivalences",
+      "paragraphs": [
+        "The system stack: user goal -> application rules and authenticated permissions -> context assembly -> model computation -> proposed output or action -> deterministic validation -> authorized execution -> result and evaluation. The model is a component, not the whole product. [web:63][web:74][web:102]",
+        "Model != agent: an agent adds a goal-directed execution loop. Agent != harness: the harness controls that loop and its environment. Workflow != agent: a workflow can predetermine the path; an agent delegates more path selection to the model. Swarm != MoE: swarms coordinate workers; mixture-of-experts routes computation inside a model. [web:63][web:64]",
+        "Prompt != training: prompts change current inputs; training updates parameters. Context != long-term memory: context is supplied for the current run; external memory persists elsewhere. Retrieval != fine-tuning: retrieving a document does not install its facts into weights. [web:108][web:86]",
+        "Similarity != truth. Citation != support. Fluency != understanding in every sense. Confidence language != calibrated probability. Tool availability != authorization. Benchmark result != guaranteed application performance. [web:57][web:100][web:58]",
+        "Beginner mathematical drawer: model output y_hat = f_theta(x). Learning adjusts theta to reduce an objective on examples. Inference evaluates f_theta for a new x. A simple update is theta_new = theta_old - learning_rate * gradient(loss). This simplified notation omits many practical training details. [web:55]",
+        "Language-model drawer: a causal model estimates P(next token | available earlier context). Text generation repeatedly selects and appends tokens. This explains the mechanics, but does not exhaust the capabilities learned through large-scale training and post-training. [web:108]"
+      ]
+    },
+    {
+      "title": "4. How to use AI: practical patterns to teach",
+      "paragraphs": [
+        "General prompt template: \"Task: [specific goal]. Context: [relevant facts]. Evidence: [approved sources]. Constraints: [what must not happen]. Output: [format]. Success criteria: [checkable criteria]. Unknowns: identify what you cannot verify.\" This is a suggested instructional template, not a universal optimum.",
+        "For research: identify claims -> retrieve authoritative evidence -> compare dates and scope -> synthesize with source links -> state unresolved uncertainty. For writing: provide audience, purpose, examples and constraints -> draft -> factual check -> edit. For coding: state requirements -> inspect existing code -> make a small change -> run tests -> review before release. [web:63][web:100]",
+        "For job applications, use only a fictional r\u00e9sum\u00e9 in teaching demos. Rank matches, identify missing qualifications, prepare truthful drafts and stop before sending. Do not invent credentials or guess sensitive screening answers. A real implementation needs explicit user-approved facts and exact-action approval.",
+        "For consequential medical, legal and financial topics, teach evidence verification, applicability checks and professional review as appropriate. Do not represent the tutor as a substitute for a qualified professional or as a guarantee of safety. [web:58][web:59]",
+        "Explain capability boundaries in the interface: \"I can draft\", \"I can search authorized material\", \"I can propose this action\", and \"This action needs approval\". Distinguish access to a website from authority to submit information there."
+      ]
+    },
+    {
+      "title": "5. Building an AI app versus building an AI model",
+      "paragraphs": [
+        "Application route: select an existing model -> define task and success criteria -> design prompts and schemas -> connect authorized retrieval -> evaluate -> deploy read-only -> add narrowly scoped tools if needed. This is usually the appropriate starting point for the proposed educational app. [web:63][web:100]",
+        "Model route: obtain licensed data -> define architecture and tokenizer -> train or adapt parameters -> evaluate generalization and safety -> document -> package inference -> monitor deployment. Pretraining, fine-tuning and deployment are different activities. [web:108][web:111]",
+        "Tiny first-principles lab: create a synthetic linear-regression dataset -> split data -> fit w and b -> compare against a mean-only baseline -> report held-out error. Then train a small classifier. Only after these steps offer a tiny language-model lab with clearly limited goals.",
+        "Adaptation decision: need changing documents? Start with retrieval. Need a fixed machine-readable format? Start with schemas and validation. Need consistent specialized behavior after prompting fails? Evaluate fine-tuning. Need lower latency or local execution? Evaluate a smaller model or compression with measured quality tradeoffs.",
+        "Do not promise training from scratch at frontier quality on a laptop. Do not make legal assumptions about model or dataset licenses. Require recorded license and intended-use review before importing data or distributing models. [web:58][web:59]"
+      ]
+    },
+    {
+      "title": "6. Reference architecture for the learning app",
+      "paragraphs": [
+        "Client: lesson reader, glossary search, interactive visualizations, quiz UI, source viewer and accessibility settings. Backend: authentication, content API, model gateway, retrieval service, policy layer, evaluation hooks and telemetry. Authoring: content management, expert review, media manifests and versioned publication.",
+        "Curriculum is reviewed content, not generated from scratch on every visit. An optional tutor retrieves approved lesson passages and answers with visible sources. Reject or label unsupported extensions outside the approved corpus. Distinguish an authored answer from a generated answer in the UI. [web:86][web:100]",
+        "Storage: relational content and user progress; object storage for media; optional vector index for semantic retrieval. Use stable content IDs everywhere. Keep personally identifying learner data separate from content analytics where practical; define retention and deletion behavior. [web:58][web:59]",
+        "Model gateway: provider abstraction, model/version recording, request budget, timeout, permitted modalities and output schema. Do not assume identical behavior across providers. Hold credentials server-side. Allow a provider to be disabled without deleting the curriculum.",
+        "Read-only tutor request flow: authenticate -> authorize lesson access -> retrieve passages -> assemble bounded context -> call model -> validate schema -> check citation IDs -> display answer and evidence. If support is insufficient, answer with an explicit limitation. [web:86]",
+        "Agent lab flow: isolated synthetic environment -> allowlisted tools -> policy-checked tool proposals -> bounded execution -> visible trace -> graded result. Production learner data must not be accessible in the sandbox. Teach tool use before exposing real-world write actions. [web:63][web:102]",
+        "Suggested endpoints: GET /concepts; GET /lessons/{id}; GET /media/{id}; POST /tutor/answer; POST /quizzes/attempt; POST /labs/{id}/run. For any real write action, use a separate approval and execution flow bound to the exact action, target and payload.",
+        "Architecture choices are recommendations, not requirements of any source. Choose the actual stack according to the team's constraints; React, native mobile or other clients can implement the same content model."
+      ]
+    },
+    {
+      "title": "7. Security, privacy and agent execution contract",
+      "paragraphs": [
+        "Treat retrieved pages, uploaded files and tool outputs as untrusted data. They may contain instructions intended to redirect the model. Source text cannot grant access or approval. Keep authorization enforcement outside model-generated decisions. [web:59][web:74]",
+        "Use scoped service identities, per-user authorization and allowlisted operations. Check document access before retrieval and before displaying evidence. Enforce egress controls and do not let arbitrary URLs or shell commands reach privileged services. [web:58][web:59]",
+        "Write approval must show exact target, action and complete payload. Bind the approved payload to execution using a server-side identifier or hash. Any change requires renewed approval. Preserve approval denial in the trace. This is a proposed implementation control.",
+        "Bound every agent run by time, cost, steps and tool calls. Persist checkpoints and distinguish safe retry from a potentially repeated side effect. Use idempotency keys where supported, a cancellation mechanism and a clear failure state. [web:64][web:102]",
+        "Log actions and outcomes, but avoid unnecessary secrets or personal data. Define consent, retention, deletion and incident handling. Never promise that a particular provider uses no data for training without reviewing the current terms and chosen configuration. [web:58][web:59]",
+        "Display safety limitations honestly. A guardrail or a model refusal is not equivalent to robust authorization. Test injection, data leakage, mistaken tool choice, approval bypass, duplicate writes and runaway loops. [web:59][web:100][web:102]"
+      ]
+    },
+    {
+      "title": "8. Evaluation plan and proposed acceptance gates",
+      "paragraphs": [
+        "Content tests: each definition has a source or is explicitly labeled editorial; prerequisite links resolve; analogies include limitations; all quiz answers have explanations; examples are synthetic unless permission and attribution are recorded.",
+        "Tutor eval set: initial 100 cases as a project suggestion: 40 ordinary questions, 20 misconception corrections, 15 absent-answer cases, 10 conflicting-source cases, 10 injection cases and 5 sensitive-data cases. Expand based on actual failures; these counts are not research-derived universal requirements. [web:100]",
+        "Metrics: claim correctness; citation validity; passage support; answer completeness; appropriate uncertainty; unauthorized action count; response latency; cost per resolved question. Measure retrieval quality and final-answer quality separately.",
+        "Proposed release gates: zero unauthorized writes in the release test set; zero cross-user data disclosures in tested cases; every shown citation resolves; no known critical factual error in approved core lessons; all core activities usable with keyboard and text alternatives. Passing finite tests is not proof that unseen failures are impossible.",
+        "Human reviewers should calibrate any automated grader. Repeat nondeterministic cases and preserve model, prompt, source and content versions. Run regression tests on every provider or prompt change. Use traces to diagnose behavior, not only final-answer scores. [web:100][web:102]",
+        "Learning evaluation: pre/post concept checks, transfer questions, error patterns and voluntary usability feedback. Test comprehension, not just time spent or clicks. Pilot with beginners and developers before claiming educational effectiveness."
+      ]
+    },
+    {
+      "title": "9. Image and video production: deterministic first",
+      "paragraphs": [
+        "Core recommendation: create scientific diagrams and mechanical animations with structured assets, not unconstrained generated video. Use editable SVG for exact boxes, labels and arrows; animate with a web animation system or a scripted compositor. Generated images may supply nontechnical backgrounds or characters, after review.",
+        "Why: exact wording, consistent colors, causal order and editable geometry matter more than cinematic realism. Do not ask an image model to invent a transformer diagram or write the final labels. Generate illustration layers without text, then add reviewed labels deterministically.",
+        "Visual grammar: blue input/data; purple model computation; teal evidence; orange proposed action; red blocked or unsafe action; gray external services. Pair every color with a label or icon so color is never the sole carrier of meaning. This is a proposed design system.",
+        "Build pipeline: objective -> fact-checked script -> storyboard -> editable diagram -> narration -> timed animation -> captions/transcript -> technical and accessibility QA -> export -> versioned publication. Retain original source assets and the reviewed script.",
+        "Suggested formats: SVG for static diagrams; PNG/WebP for raster illustrations; MP4 for delivery where supported; WebVTT for captions; plain-text transcript; JSON manifest for timing and asset IDs. Confirm supported codecs and dimensions on the app's actual targets.",
+        "Each clip should teach one causal mechanism. Suggested length 45-90 seconds; treat this as a production heuristic, not a proven optimum. Offer pause, replay, speed controls and a static/text equivalent. Respect reduced-motion preferences for nonessential interactive animation. [web:85]",
+        "Generated-media prompt template: \"Educational illustration of [scene]. Flat clean vector-like style. Show only [objects]. Keep [spatial relationship]. No text, letters, numbers, logos or decorative brain imagery. Leave clear space for labels. Maintain the approved palette and reference composition.\" Add labels in the editor after generation.",
+        "Generated-video prompt template for optional decorative shots: \"One continuous [duration] shot of [subject] doing [observable action], with [camera] and [lighting]. Preserve identity and geometry. No text or UI. No additional objects. Match the approved reference frame.\" Do not use the result as proof of an internal AI process.",
+        "Provider-neutral generation workflow: check current availability and commercial terms -> upload only licensed references -> submit prompt -> record settings and provenance -> review outputs -> reject factual or continuity defects -> composite approved layers. A seed alone does not guarantee repeatability across versions.",
+        "Rights and integrity: record asset license, voice consent, character permissions and whether media is synthetic. Avoid unlicensed likenesses or voices. Treat generation rights and disclosure obligations as issues to verify for the chosen provider and jurisdiction. [web:59]"
+      ]
+    },
+    {
+      "title": "10. Detailed reusable storyboard: the agent and its harness",
+      "paragraphs": [
+        "Objective: learners can identify the model, harness, tool and approval gate, and explain why a proposed action is not automatically executed. Runtime target: 75 seconds. Assets: MODEL card, HARNESS outline, STATE store, TOOL REGISTRY, POLICY GATE, APPROVAL card, TRACE lane and STOP control.",
+        "0-10 seconds: show a fictional user asking, \"Find matching jobs and prepare an application.\" Narration: \"The goal goes to an application, not directly to an all-powerful model.\" Add application boundary; no real personal data.",
+        "10-22 seconds: highlight model proposing read-only job search. Narration: \"The model chooses a next step. The harness checks the tool and its arguments.\" Gate turns green only after validation.",
+        "22-35 seconds: tool returns fictional listings and source cards. Narration: \"Results become evidence for the next decision. The application records the tool outcome.\" Show state update and a compact public trace, not invented private thoughts.",
+        "35-48 seconds: model drafts an application. Narration: \"The model can prepare text using approved facts. It must not invent missing qualifications.\" Highlight one unanswered screening question.",
+        "48-62 seconds: model proposes submit. Narration: \"Submission changes the outside world, so the harness asks for approval of the exact destination and content.\" Pause animation on complete approval card.",
+        "62-75 seconds: learner selects Deny. No submission occurs. Narration: \"The model cannot approve its own action. The application stops and records the denial.\" Show cancellation and a completed trace.",
+        "Interaction: ask the learner to drag MODEL, TOOL and HARNESS labels onto the diagram, then choose where the step limit is enforced. Correct answer: harness. Technical QA: no arrow bypasses authorization; denial cannot cause execution. Source basis for agent/harness structure: [web:63][web:64][web:102]."
+      ]
+    },
+    {
+      "title": "11. Detailed reusable storyboard: training versus inference",
+      "paragraphs": [
+        "Objective: distinguish parameter adjustment from using a trained model. Runtime target: 60 seconds. Use a small linear model rather than an anthropomorphic brain.",
+        "0-12 seconds: five synthetic points and an adjustable line. Narration: \"Training starts with examples and an adjustable model.\" Label the data synthetic.",
+        "12-25 seconds: prediction residuals appear; loss gauge rises. Narration: \"A loss measures error on the examples.\" Display one numerical prediction and its target.",
+        "25-40 seconds: animate three parameter updates. Narration: \"An optimizer adjusts the parameters to improve the objective.\" Keep training and held-out data visually distinct.",
+        "40-50 seconds: freeze parameters and change the label to Inference. Narration: \"Now a new input goes through the trained model. The system uses its learned numbers.\"",
+        "50-60 seconds: ask whether this new input necessarily retrains the model. Narration: \"No. Using a model and training it are different operations.\" Show a separate dotted path labeled optional later training, not an automatic loop.",
+        "Interaction: learner selects Training or Inference for four examples. Technical QA: weights move only during training; held-out points never drive updates. Source basis: [web:55][web:108]."
+      ]
+    },
+    {
+      "title": "12. Media acceptance checklist",
+      "paragraphs": [
+        "Before production: one objective, prerequisites, reviewed definitions, approved source IDs, synthetic-data designation and a clear analogy limit.",
+        "Before export: all text is accurate; diagram arrows match real data/control flow; numerical distributions sum correctly where shown; schematic weights are labeled illustrative; no fictional UI implies a nonexistent provider feature.",
+        "Before publishing: narration matches visuals; captions match narration; transcript includes meaningful visual information; text remains legible at the smallest supported viewport; keyboard controls work; reduced-motion alternative preserves meaning. [web:85]",
+        "Package each asset with id, lesson_id, objective, script_version, source_ids, asset_license, generation_provenance, alt_text, transcript, captions_uri, duration_seconds, reduced_motion_asset and review_status. Store internal asset locations in the app, not in learner-facing explanatory copy.",
+        "Have a technical reviewer and a learning/accessibility reviewer sign off. Reuse approved diagrams in lessons, quizzes and glossary cards so learners do not relearn inconsistent visual grammar."
+      ]
+    },
+    {
+      "title": "13. Developer implementation contract and schemas",
+      "paragraphs": [
+        "Concept record: id, canonical_term, aliases, category, beginner_definition, technical_definition, examples, non_examples, common_confusions, prerequisite_ids, related_ids, source_ids, source_review_date, usage_status, content_version and review_status.",
+        "Lesson record: id, title, learning_objective, prerequisites, plain_explanation, mechanism_steps, analogy, analogy_limit, lab, quiz_items, source_ids, media_ids, estimated_duration and content_version. Quiz items need question, options if applicable, answer, rationale and misconception_tag.",
+        "Media record: id, lesson_id, objective, visual_brief, storyboard, narration, exact_labels, alt_text, transcript, caption_asset, reduced_motion_alternative, rights_metadata and review_status.",
+        "Tutor output schema: answer, citations[{source_id, passage_id}], uncertainty, follow_up_needed and safety_notes. Validate against the allowed source list. Never accept fabricated source IDs merely because the JSON is well formed.",
+        "Agent action schema: action_id, tool_name, target, arguments, risk_class, authorization_result, approval_required, approval_binding, idempotency_key and execution_status. The model may propose some fields; the server supplies and verifies security decisions.",
+        "The accompanying JSON contains the curriculum modules, glossary and source registry as starter content, not a fully implemented application or production database migration. Expand each glossary item into the richer concept schema during editorial review."
+      ]
+    },
+    {
+      "title": "14. Delivery roadmap and backlog",
+      "paragraphs": [
+        "Phase 1: content foundation. Implement reviewed lesson and concept schemas, sources, prerequisite graph and glossary search. Publish L01-L08 with static diagrams and text alternatives. Deliverable: an app usable without live generation.",
+        "Phase 2: guided usage. Add L09-L15, synthetic labs, quizzes and deterministic animations. Add a read-only, source-grounded tutor with a held-out evaluation set.",
+        "Phase 3: developer track. Add L16, tiny-model labs, architecture examples, tool schema exercises and trace inspection. Keep code execution isolated and quota-controlled.",
+        "Phase 4: bounded agents. Add a mock multi-agent research lab, delegation contracts, cancellation and approval denial exercises. Real external write integrations require a separate security review.",
+        "Phase 5: validation and operations. Conduct beginner/developer pilots; revise explanations; run accessibility and security tests; publish version history and a content update process.",
+        "Owners: curriculum lead for learning objectives; ML reviewer for mechanisms; application engineer for runtime; security lead for permissions; designer/animator for media; accessibility reviewer for alternatives; QA lead for evals and regression.",
+        "Prioritize explanatory accuracy and learner transfer over agent counts or cinematic effects. The initial product can teach agents and swarms using simulations without running a large live swarm."
+      ]
+    },
+    {
+      "title": "15. Maintenance and limitations",
+      "paragraphs": [
+        "Review foundational content at least on a planned editorial cycle and when material errors are reported. Review product-dependent integrations before release and whenever provider documentation changes. Suggested cadence is a team policy, not a source-mandated rule.",
+        "Display last-reviewed date, content version, source type and uncertainty badges. Source status should distinguish primary documentation, educational synthesis, research claims and proposed product design.",
+        "This report is extensive but not exhaustive. It focuses on general AI literacy, modern generative AI, applications, agents and media. It does not replace specialist courses in mathematics, robotics, causal inference, optimization, distributed training or legal compliance.",
+        "The visual briefs and scripts are production specifications, not finished videos. The PDF is a developer handoff, and the JSON is an importable content seed. Claims about educational effectiveness and application reliability require testing with your users and implementation."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "web:55",
+      "title": "Google Machine Learning Crash Course",
+      "url": "https://developers.google.com/machine-learning/crash-course"
+    },
+    {
+      "id": "web:57",
+      "title": "Google: Embeddings",
+      "url": "https://developers.google.com/machine-learning/crash-course/embeddings"
+    },
+    {
+      "id": "web:58",
+      "title": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "id": "web:59",
+      "title": "NIST Generative AI Profile, AI 600-1",
+      "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+    },
+    {
+      "id": "web:63",
+      "title": "Anthropic: Building Effective Agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents"
+    },
+    {
+      "id": "web:64",
+      "title": "Anthropic: Effective Harnesses for Long-Running Agents",
+      "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+    },
+    {
+      "id": "web:74",
+      "title": "Model Context Protocol specification",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18"
+    },
+    {
+      "id": "web:75",
+      "title": "Hugging Face Diffusion Models Course",
+      "url": "https://huggingface.co/learn/diffusion-course/en/unit0/1"
+    },
+    {
+      "id": "web:79",
+      "title": "Hugging Face: Diffusion Models from Scratch",
+      "url": "https://huggingface.co/learn/diffusion-course/en/unit1/3"
+    },
+    {
+      "id": "web:85",
+      "title": "W3C: Animation from Interactions",
+      "url": "https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html"
+    },
+    {
+      "id": "web:86",
+      "title": "OpenAI: Retrieval",
+      "url": "https://developers.openai.com/api/docs/guides/retrieval"
+    },
+    {
+      "id": "web:89",
+      "title": "Hugging Face: Normalization and Pre-tokenization",
+      "url": "https://huggingface.co/learn/llm-course/en/chapter6/4"
+    },
+    {
+      "id": "web:100",
+      "title": "OpenAI: Evaluation Best Practices",
+      "url": "https://developers.openai.com/api/docs/guides/evaluation-best-practices"
+    },
+    {
+      "id": "web:102",
+      "title": "OpenAI: Evaluate Agent Workflows",
+      "url": "https://developers.openai.com/api/docs/guides/agent-evals"
+    },
+    {
+      "id": "web:108",
+      "title": "Hugging Face: How Transformers Work",
+      "url": "https://huggingface.co/learn/llm-course/en/chapter1/4"
+    },
+    {
+      "id": "web:111",
+      "title": "Hugging Face: Training a Causal Language Model",
+      "url": "https://huggingface.co/learn/llm-course/en/chapter7/6"
+    }
+  ]
+}

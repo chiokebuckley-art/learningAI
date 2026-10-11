@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="css/socratic.css">
   <link rel="stylesheet" href="css/video-theater.css">
   <link rel="stylesheet" href="css/literacy.css">
+  <link rel="stylesheet" href="css/vocabulary.css">
 </head>
 <body>
 
@@ -37,6 +38,10 @@
       <button class="nav-tab active" data-portal="literacy">
         <span class="nav-tab-icon">🌍</span>
         <span>AI Literacy Core (All Ages)</span>
+      </button>
+      <button class="nav-tab" data-portal="vocabulary">
+        <span class="nav-tab-icon">📖</span>
+        <span>AI Words (Vocabulary)</span>
       </button>
       <button class="nav-tab" data-portal="sandbox">
         <span class="nav-tab-icon">🎨</span>
@@ -88,6 +93,13 @@
     <!-- ============================================================== -->
     <section class="portal-section active" id="portalLiteracy">
       <div id="literacyCoreRoot"></div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- AI WORDS: THE VOCABULARY OF AI (EVERYONE)                     -->
+    <!-- ============================================================== -->
+    <section class="portal-section" id="portalVocabulary">
+      <div id="vocabularyRoot"></div>
     </section>
 
     <!-- ============================================================== -->
@@ -685,6 +697,8 @@
   <script src="js/studio-transformer.js"></script>
   <script src="js/socratic-split.js"></script>
   <script src="js/literacy-core.js"></script>
+  <script src="js/vocabulary-data.js"></script>
+  <script src="js/vocabulary.js"></script>
   <script src="js/app.js"></script>
 
 </body>
