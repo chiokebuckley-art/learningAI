@@ -62,6 +62,18 @@ Seven interactive lessons, each ending with a no-hints, no-AI transfer check. A 
 
 Also included: learning pathways for young children, middle school, high school, adults and job seekers, older adults and families, and teachers and managers, plus a skills record with practice badges (AI-aware citizen, Responsible AI user). Progress is stored only in the learner's browser.
 
+### AI Words (Vocabulary, All Ages)
+*Goal: Learn the words of AI, what each one means, and which words people mix up.*
+
+197 terms from the *AI from First Principles* curriculum seed, in seven categories: Foundations; Training and model internals; Language and context; Retrieval and memory; Agents and integrations; Quality, security and operations; Media and emerging language.
+
+* **Browse:** search by word or meaning, filter by category or by lesson, and mark words "I know this".
+* **Lessons:** every word links to one of 16 first-principles lessons (from "What AI is" to "Building and operating an AI application"), each with a guiding question, how it works, a common mix-up, and a check-yourself question.
+* **Practice:** read a definition and pick the matching word, with look-alike words from the same category as distractors.
+* Every word and lesson links to the public references it draws on. "Known" marks are stored only in the learner's browser.
+
+The content lives in `data/ai-curriculum-seed.json`; `python3 tools/build_vocabulary.py` regenerates `js/vocabulary-data.js` from it, including which lesson each word links to.
+
 ### Section 1: The Primary Sandbox (Ages 6–11)
 *Goal: Strip the "magic" away. AI isn't a robot brain; it's math, data, and pattern matching.*
 
