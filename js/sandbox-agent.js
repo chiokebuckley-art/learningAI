@@ -1,247 +1,265 @@
 /**
- * 5th Grade Intelligent Agents: 2D Autonomous Robot Sandbox
- * - Input -> Processing -> Output loop
- * - Raycasting distance sensors (LIDAR)
- * - Autonomous obstacle avoidance
- * - Dynamic obstacle placement
+ * 5th Grade Intelligent Agents: 2D Autonomous Robot Sandbox (Kids Activity 3: "Dodge the rocks")
+ * - 3 laser eyes (Left -0.6 rad, Middle 0 rad, Right +0.6 rad, length 70px)
+ * - Autonomous obstacle avoidance (SEE -> THINK -> MOVE)
+ * - Drop 3 rocks to earn the star
  */
 
 class AutonomousAgentSandbox {
   constructor() {
-    this.canvas = document.getElementById("robotCanvas");
-    this.ctx = this.canvas ? this.canvas.getContext("2d") : null;
-
-    this.bot = {
-      x: 100,
-      y: 100,
-      angle: 0.5,
-      speed: 2.2,
-      radius: 18,
-      turnRate: 0.05
+    this.botState = {
+      x: 140,
+      y: 170,
+      h: 0.3,
+      rocks: [[340, 120], [360, 230], [220, 260]],
+      rays: [1, 1, 1]
     };
+    this.botRunning = true;
+    this.rockCount = 0;
+    this.rayD = [1, 1, 1];
+    this.botRaf = null;
+    this.frameCounter = 0;
 
-    this.sensors = [
-      { angleOffset: -0.6, distance: 100, maxRange: 120, label: "Left" },
-      { angleOffset: 0.0, distance: 100, maxRange: 140, label: "Center" },
-      { angleOffset: 0.6, distance: 100, maxRange: 120, label: "Right" }
-    ];
-
-    this.obstacles = [
-      { x: 180, y: 80, width: 40, height: 120 },
-      { x: 300, y: 160, width: 140, height: 35 },
-      { x: 160, y: 280, width: 80, height: 80 },
-      { x: 420, y: 60, width: 40, height: 140 }
-    ];
-
-    this.isAutonomous = true;
-    this.animationId = null;
-
-    this.initDOM();
-    this.bindEvents();
-    this.startSimulation();
+    this.root = document.getElementById("kidsActBot");
+    this.renderKids();
   }
 
-  initDOM() {
-    this.btnToggleAuto = document.getElementById("btnToggleAgentAuto");
-    this.btnClearObs = document.getElementById("btnClearAgentObs");
-    this.btnResetBot = document.getElementById("btnResetAgentBot");
-    this.stepInput = document.getElementById("loopStepInput");
-    this.stepProcess = document.getElementById("loopStepProcess");
-    this.stepOutput = document.getElementById("loopStepOutput");
-    this.sensorReadout = document.getElementById("sensorTelemetryReadout");
+  getChipLine() {
+    if (this.rockCount >= 3) {
+      return "You made its world harder and it still found a way. That is a robot thinking for itself!";
+    }
+    return "This robot has 3 laser eyes. Drop rocks in front of it and watch what it decides.";
   }
 
-  bindEvents() {
-    this.btnToggleAuto?.addEventListener("click", () => {
-      this.isAutonomous = !this.isAutonomous;
-      if (this.btnToggleAuto) {
-        this.btnToggleAuto.textContent = this.isAutonomous ? "⏸ Pause Autonomy" : "▶ Start Autonomy";
-        this.btnToggleAuto.classList.toggle("btn-pill-amber", !this.isAutonomous);
-      }
-    });
-
-    this.btnClearObs?.addEventListener("click", () => {
-      this.obstacles = [];
-    });
-
-    this.btnResetBot?.addEventListener("click", () => {
-      this.bot.x = 60;
-      this.bot.y = 60;
-      this.bot.angle = 0.5;
-    });
-
-    this.canvas?.addEventListener("click", (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      // Add custom obstacle
-      this.obstacles.push({ x: clickX - 25, y: clickY - 25, width: 50, height: 50 });
-    });
+  stopLoop() {
+    if (this.botRaf) {
+      cancelAnimationFrame(this.botRaf);
+      this.botRaf = null;
+    }
   }
 
-  startSimulation() {
-    const loop = () => {
-      this.updateSensors();
-      if (this.isAutonomous) {
-        this.processAutonomousLogic();
-      }
-      this.render();
-      this.animationId = requestAnimationFrame(loop);
-    };
-    this.animationId = requestAnimationFrame(loop);
-  }
+  startBotLoop() {
+    this.stopLoop();
+    const tick = () => {
+      const c = document.getElementById("botCanvas");
+      if (c && window.app?.screen === "bot") {
+        const ctx = c.getContext("2d");
+        const W = c.width;
+        const H = c.height;
+        const b = this.botState;
+        const angles = [-0.6, 0, 0.6];
+        const L = 70;
 
-  updateSensors() {
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+        const hit = (px, py) => {
+          if (px < 16 || px > W - 16 || py < 16 || py > H - 16) return true;
+          return b.rocks.some(([rx, ry]) => Math.hypot(px - rx, py - ry) < 20);
+        };
 
-    // Raycast for each sensor
-    this.sensors.forEach(sensor => {
-      const rayAngle = this.bot.angle + sensor.angleOffset;
-      let minHitDist = sensor.maxRange;
+        const rays = angles.map(a => {
+          for (let d = 6; d <= L; d += 4) {
+            if (hit(b.x + Math.cos(b.h + a) * d, b.y + Math.sin(b.h + a) * d)) {
+              return d / L;
+            }
+          }
+          return 1;
+        });
+        b.rays = rays;
 
-      // Check canvas bounds
-      for (let dist = 1; dist < sensor.maxRange; dist += 3) {
-        const testX = this.bot.x + Math.cos(rayAngle) * dist;
-        const testY = this.bot.y + Math.sin(rayAngle) * dist;
+        if (this.botRunning) {
+          if (rays[1] < 0.65 || rays[0] < 0.5) b.h += 0.09;
+          else if (rays[2] < 0.5) b.h -= 0.09;
 
-        if (testX <= 0 || testX >= w || testY <= 0 || testY >= h) {
-          minHitDist = dist;
-          break;
+          const nx = b.x + Math.cos(b.h) * 1.7;
+          const ny = b.y + Math.sin(b.h) * 1.7;
+          if (!hit(nx, ny)) {
+            b.x = nx;
+            b.y = ny;
+          } else {
+            b.h += 0.35;
+          }
         }
 
-        // Check obstacles
-        const inObstacle = this.obstacles.some(obs =>
-          testX >= obs.x && testX <= obs.x + obs.width &&
-          testY >= obs.y && testY <= obs.y + obs.height
-        );
+        // Draw background & grid
+        ctx.fillStyle = "#E8F4FF";
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = "#D2E6F7";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 35) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, H);
+          ctx.stroke();
+        }
+        for (let y = 0; y < H; y += 35) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(W, y);
+          ctx.stroke();
+        }
 
-        if (inObstacle) {
-          minHitDist = dist;
-          break;
+        // Draw rocks
+        ctx.font = "28px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        for (const [rx, ry] of b.rocks) {
+          ctx.fillText("🪨", rx, ry);
+        }
+
+        // Draw laser rays
+        angles.forEach((a, idx) => {
+          const d = rays[idx] * L;
+          ctx.strokeStyle = rays[idx] < 0.6 ? "#FF6B6B" : "#4ADE80";
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x + Math.cos(b.h + a) * d, b.y + Math.sin(b.h + a) * d);
+          ctx.stroke();
+        });
+
+        // Draw purple robot with 2 eyes
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.h);
+        ctx.fillStyle = "#A78BFA";
+        ctx.strokeStyle = "#2B2A4C";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.arc(6, -5, 4, 0, Math.PI * 2);
+        ctx.arc(6, 5, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        this.frameCounter++;
+        if (this.frameCounter % 5 === 0) {
+          this.rayD = [...rays];
+          this.updateTelemetryDOM();
         }
       }
-      sensor.distance = minHitDist;
-    });
+      if (window.app?.screen === "bot") {
+        this.botRaf = requestAnimationFrame(tick);
+      }
+    };
+    this.botRaf = requestAnimationFrame(tick);
+  }
 
-    // Update telemetry HUD
-    if (this.sensorReadout) {
-      this.sensorReadout.innerHTML = `
-        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-          <span>L: ${Math.round(this.sensors[0].distance)}px</span>
-          <span style="color:#00d2ff; font-weight:700;">C: ${Math.round(this.sensors[1].distance)}px</span>
-          <span>R: ${Math.round(this.sensors[2].distance)}px</span>
+  updateTelemetryDOM() {
+    if (!this.root) return;
+    const near = Math.min(...this.rayD) < 0.6;
+    const stepThink = this.root.querySelector("#kidsBotStepThink");
+    const stepMove = this.root.querySelector("#kidsBotStepMove");
+    if (stepThink) {
+      stepThink.style.background = near ? "#2B2A4C" : "#FFF8EC";
+      stepThink.style.color = near ? "#FFFFFF" : "#2B2A4C";
+    }
+    if (stepMove) {
+      stepMove.style.background = near ? "#2B2A4C" : "#FFF8EC";
+      stepMove.style.color = near ? "#FFFFFF" : "#2B2A4C";
+    }
+
+    ["Left", "Middle", "Right"].forEach((name, i) => {
+      const d = this.rayD[i] ?? 1;
+      const statusEl = this.root.querySelector(`#kidsRayStatus${i}`);
+      const fillEl = this.root.querySelector(`#kidsRayFill${i}`);
+      if (statusEl) {
+        statusEl.textContent = d < 0.5 ? "Close!" : d < 0.85 ? "Something" : "Clear";
+      }
+      if (fillEl) {
+        fillEl.style.width = `${Math.round(d * 100)}%`;
+        fillEl.style.background = d < 0.5 ? "#FF6B6B" : "#4ADE80";
+      }
+    });
+  }
+
+  renderKids() {
+    if (!this.root) return;
+    const near = Math.min(...this.rayD) < 0.6;
+
+    this.root.innerHTML = `
+      <div class="kids-two-col">
+        <!-- Left card: Tap the blue floor to drop rocks -->
+        <div class="kids-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div style="font-family:var(--font-display);font-size:22px;font-weight:800;">🪨 Tap the blue floor to drop rocks!</div>
+            <div id="kidsRockCountLabel" style="font-weight:800;font-size:16px;color:#6B6890;">Rocks dropped: ${this.rockCount} / 3</div>
+          </div>
+          <canvas id="botCanvas" width="560" height="350" style="width:100%;max-width:560px;height:auto;border-radius:20px;border:4px solid #2B2A4C;background:#E8F4FF;cursor:crosshair;display:block;"></canvas>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button type="button" id="btnKidsToggleBot" style="padding:12px 18px;border-radius:16px;border:3px solid #2B2A4C;background:#FFC53D;font-family:var(--font-body);font-size:16px;font-weight:800;color:#2B2A4C;cursor:pointer;box-shadow:0 3px 0 #2B2A4C;">
+              ${this.botRunning ? "⏸ Pause robot" : "▶ Wake robot"}
+            </button>
+            <button type="button" id="btnKidsClearRocks" style="padding:12px 18px;border-radius:16px;border:3px solid #2B2A4C;background:#FFF8EC;font-family:var(--font-body);font-size:16px;font-weight:800;color:#2B2A4C;cursor:pointer;">
+              Clear rocks
+            </button>
+          </div>
         </div>
-      `;
-    }
-  }
 
-  processAutonomousLogic() {
-    const leftDist = this.sensors[0].distance;
-    const centerDist = this.sensors[1].distance;
-    const rightDist = this.sensors[2].distance;
+        <!-- Right card: Inside the robot's head -->
+        <div class="kids-card">
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:14px;">🧠 Inside the robot's head</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px;">
+            <div style="padding:14px 16px;border-radius:16px;border:3px solid #2B2A4C;background:#2B2A4C;color:#FFFFFF;font-weight:800;font-size:17px;">
+              👀 1. SEE — its 3 laser eyes look ahead
+            </div>
+            <div id="kidsBotStepThink" style="padding:14px 16px;border-radius:16px;border:3px solid #2B2A4C;background:${near ? "#2B2A4C" : "#FFF8EC"};color:${near ? "#FFFFFF" : "#2B2A4C"};font-weight:800;font-size:17px;">
+              🧠 2. THINK — "is something close?"
+            </div>
+            <div id="kidsBotStepMove" style="padding:14px 16px;border-radius:16px;border:3px solid #2B2A4C;background:${near ? "#2B2A4C" : "#FFF8EC"};color:${near ? "#FFFFFF" : "#2B2A4C"};font-weight:800;font-size:17px;">
+              🦶 3. MOVE — turn away or keep going
+            </div>
+          </div>
 
-    // Cycle loop indicators visually
-    this.stepInput?.classList.add("active");
-    this.stepProcess?.classList.add("active");
-    this.stepOutput?.classList.add("active");
+          <div style="font-weight:800;margin-bottom:8px;">Laser eyes right now:</div>
+          ${["Left", "Middle", "Right"].map((name, i) => {
+            const d = this.rayD[i] ?? 1;
+            return `
+              <div style="margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;font-weight:800;font-size:15px;margin-bottom:4px;">
+                  <span>${name} eye</span>
+                  <span id="kidsRayStatus${i}">${d < 0.5 ? "Close!" : d < 0.85 ? "Something" : "Clear"}</span>
+                </div>
+                <div style="height:18px;background:#FFF1CC;border-radius:999px;border:2px solid #2B2A4C;overflow:hidden;">
+                  <div id="kidsRayFill${i}" style="width:${Math.round(d * 100)}%;height:100%;background:${d < 0.5 ? "#FF6B6B" : "#4ADE80"};"></div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
 
-    // Autonomous Decision Matrix:
-    // If center path blocked, turn away from whichever side is closer to an obstacle
-    if (centerDist < 45 || leftDist < 30 || rightDist < 30) {
-      if (leftDist < rightDist) {
-        this.bot.angle += this.bot.turnRate * 1.8; // Turn right
-      } else {
-        this.bot.angle -= this.bot.turnRate * 1.8; // Turn left
+    const canvas = this.root.querySelector("#botCanvas");
+    canvas?.addEventListener("click", (e) => {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left) * (canvas.width / r.width);
+      const y = (e.clientY - r.top) * (canvas.height / r.height);
+      this.botState.rocks.push([x, y]);
+      this.rockCount++;
+      const countEl = this.root.querySelector("#kidsRockCountLabel");
+      if (countEl) countEl.textContent = `Rocks dropped: ${this.rockCount} / 3`;
+      if (this.rockCount >= 3) {
+        window.app?.markKidsDone("bot");
+        window.app?.updateChipLine(this.getChipLine());
       }
-    } else {
-      // Clear path: move forward with gentle natural wander
-      this.bot.angle += (Math.random() - 0.5) * 0.04;
-    }
-
-    // Move forward
-    const nextX = this.bot.x + Math.cos(this.bot.angle) * this.bot.speed;
-    const nextY = this.bot.y + Math.sin(this.bot.angle) * this.bot.speed;
-
-    // Boundary check
-    if (nextX > this.bot.radius && nextX < this.canvas.width - this.bot.radius) {
-      this.bot.x = nextX;
-    } else {
-      this.bot.angle += Math.PI * 0.5;
-    }
-
-    if (nextY > this.bot.radius && nextY < this.canvas.height - this.bot.radius) {
-      this.bot.y = nextY;
-    } else {
-      this.bot.angle += Math.PI * 0.5;
-    }
-  }
-
-  render() {
-    if (!this.ctx || !this.canvas) return;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Draw Obstacles
-    this.ctx.fillStyle = "rgba(239, 68, 68, 0.25)";
-    this.ctx.strokeStyle = "#ef4444";
-    this.ctx.lineWidth = 1.5;
-    this.obstacles.forEach(obs => {
-      this.ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-      this.ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
     });
 
-    // Draw Sensor Rays
-    this.sensors.forEach(sensor => {
-      const rayAngle = this.bot.angle + sensor.angleOffset;
-      const hitX = this.bot.x + Math.cos(rayAngle) * sensor.distance;
-      const hitY = this.bot.y + Math.sin(rayAngle) * sensor.distance;
-
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.bot.x, this.bot.y);
-      this.ctx.lineTo(hitX, hitY);
-
-      if (sensor.distance < 45) {
-        this.ctx.strokeStyle = "#ef4444"; // Danger red
-        this.ctx.lineWidth = 2;
-      } else {
-        this.ctx.strokeStyle = "rgba(0, 210, 255, 0.4)";
-        this.ctx.lineWidth = 1;
-      }
-      this.ctx.stroke();
-
-      // Hit point spark
-      this.ctx.fillStyle = sensor.distance < 45 ? "#ef4444" : "#00d2ff";
-      this.ctx.beginPath();
-      this.ctx.arc(hitX, hitY, 3.5, 0, Math.PI * 2);
-      this.ctx.fill();
+    this.root.querySelector("#btnKidsToggleBot")?.addEventListener("click", () => {
+      this.botRunning = !this.botRunning;
+      const btn = this.root.querySelector("#btnKidsToggleBot");
+      if (btn) btn.textContent = this.botRunning ? "⏸ Pause robot" : "▶ Wake robot";
     });
 
-    // Draw Robot Body
-    this.ctx.save();
-    this.ctx.translate(this.bot.x, this.bot.y);
-    this.ctx.rotate(this.bot.angle);
-
-    // Main body circle
-    this.ctx.fillStyle = "#ff7043";
-    this.ctx.beginPath();
-    this.ctx.arc(0, 0, this.bot.radius, 0, Math.PI * 2);
-    this.ctx.fill();
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
-
-    // Wheels
-    this.ctx.fillStyle = "#00d2ff";
-    this.ctx.fillRect(-this.bot.radius + 2, -this.bot.radius - 3, this.bot.radius * 2 - 4, 4);
-    this.ctx.fillRect(-this.bot.radius + 2, this.bot.radius - 1, this.bot.radius * 2 - 4, 4);
-
-    // Heading nose
-    this.ctx.fillStyle = "#ffb300";
-    this.ctx.beginPath();
-    this.ctx.arc(this.bot.radius - 2, 0, 5, 0, Math.PI * 2);
-    this.ctx.fill();
-
-    this.ctx.restore();
+    this.root.querySelector("#btnKidsClearRocks")?.addEventListener("click", () => {
+      this.botState.rocks = [];
+      this.rockCount = 0;
+      const countEl = this.root.querySelector("#kidsRockCountLabel");
+      if (countEl) countEl.textContent = `Rocks dropped: 0 / 3`;
+    });
   }
 }
 

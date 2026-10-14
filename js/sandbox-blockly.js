@@ -1,225 +1,235 @@
 /**
- * 4th Grade Coding: Visual Logic & Structures (Blockly Maze Rover)
- * - Drag/click puzzle blocks to construct computational programs
- * - If/Then conditional branch execution
- * - Loop constructs
- * - Step-by-step visual maze animation
+ * 4th Grade Coding: Visual Logic & Structures (Kids Activity 2: "Build a robot brain")
+ * - Snap blocks together to program the rover brain
+ * - 6x6 grid (288x288 canvas), rocks at (3,0), (3,1), (1,3), star at (2,4)
  */
+
+const BLOCK_INFO = {
+  fwd: { label: "🚀 Move forward", color: "#4FB3FF" },
+  left: { label: "↺ Turn left", color: "#FFC53D" },
+  right: { label: "↻ Turn right", color: "#FFC53D" },
+  if: { label: "❓ IF rock ahead → turn right", color: "#A78BFA" }
+};
 
 class BlocklyMazeRover {
   constructor() {
-    this.canvas = document.getElementById("mazeCanvas");
-    this.ctx = this.canvas ? this.canvas.getContext("2d") : null;
-    this.gridSize = 6;
-    this.cellSize = 48;
+    this.program = ["fwd", "if", "fwd"];
+    this.rover = { x: 0, y: 0, d: 0 }; // d: 0=right, 1=down, 2=left, 3=up
+    this.roverMsg = "";
+    this.roverWon = false;
+    this.roverTimer = null;
 
-    // Grid states: 0 = path, 1 = obstacle, 2 = star goal
-    this.grid = [
-      [0, 0, 1, 0, 0, 2],
-      [1, 0, 1, 0, 1, 0],
-      [0, 0, 0, 0, 1, 0],
-      [0, 1, 1, 0, 0, 0],
-      [0, 0, 0, 1, 1, 0],
-      [0, 1, 0, 0, 0, 0]
-    ];
+    this.ROCKS = [[3, 0], [3, 1], [1, 3]];
+    this.STAR = [2, 4];
+    this.DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 
-    this.rover = { x: 0, y: 5, dir: 0 }; // dir: 0 = North, 1 = East, 2 = South, 3 = West
-    this.program = [];
-    this.isRunning = false;
-    this.stepIndex = 0;
-
-    this.initDOM();
-    this.bindEvents();
-    this.renderMaze();
+    this.root = document.getElementById("kidsActRover");
+    this.renderKids();
   }
 
-  initDOM() {
-    this.workspace = document.getElementById("blockWorkspace");
-    this.btnRun = document.getElementById("btnRunMazeProgram");
-    this.btnReset = document.getElementById("btnResetMaze");
-    this.btnClear = document.getElementById("btnClearBlocks");
-    this.statusText = document.getElementById("mazeStatusText");
+  getChipLine() {
+    if (this.roverWon) {
+      return "Amazing! You programmed a robot brain. Try making a trickier one!";
+    }
+    return "A robot only does exactly what its blocks say. Build the brain, then press GO.";
   }
 
-  bindEvents() {
-    // Palette block click handlers
-    document.querySelectorAll(".code-puzzle-block[data-action]").forEach(block => {
-      block.addEventListener("click", () => {
-        const action = block.dataset.action;
-        this.addBlockToWorkspace(action, block.textContent.trim(), block.className);
-      });
-    });
-
-    this.btnRun?.addEventListener("click", () => this.runProgram());
-    this.btnReset?.addEventListener("click", () => this.resetRover());
-    this.btnClear?.addEventListener("click", () => this.clearWorkspace());
+  stopTimer() {
+    if (this.roverTimer) {
+      clearInterval(this.roverTimer);
+      this.roverTimer = null;
+    }
   }
 
-  addBlockToWorkspace(action, label, classes) {
-    if (!this.workspace) return;
-    const blockEl = document.createElement("div");
-    blockEl.className = classes;
-    blockEl.style.cursor = "pointer";
-    blockEl.innerHTML = `<span>${label}</span> <span style="margin-left:auto; opacity:0.6; font-size:11px;">✕</span>`;
-    blockEl.addEventListener("click", () => {
-      blockEl.remove();
-      this.rebuildProgramFromDOM();
-    });
-    this.workspace.appendChild(blockEl);
-    this.rebuildProgramFromDOM();
+  addBlock(b) {
+    if (this.program.length < 10) {
+      this.program = [...this.program, b];
+      this.renderKids();
+    }
   }
 
-  rebuildProgramFromDOM() {
-    this.program = [];
-    if (!this.workspace) return;
-    const blocks = this.workspace.querySelectorAll(".code-puzzle-block");
-    blocks.forEach(b => {
-      if (b.dataset.action) this.program.push(b.dataset.action);
-    });
+  removeBlock(idx) {
+    this.program = this.program.filter((_, i) => i !== idx);
+    this.renderKids();
   }
 
-  clearWorkspace() {
-    if (this.workspace) this.workspace.innerHTML = "";
-    this.program = [];
-    this.resetRover();
+  resetRover(clear = false) {
+    this.stopTimer();
+    this.rover = { x: 0, y: 0, d: 0 };
+    this.roverMsg = "";
+    this.roverWon = false;
+    if (clear) {
+      this.program = [];
+    }
+    this.renderKids();
+    window.app?.updateChipLine(this.getChipLine());
   }
 
-  resetRover() {
-    this.rover = { x: 0, y: 5, dir: 0 };
-    this.isRunning = false;
-    this.stepIndex = 0;
-    if (this.statusText) this.statusText.textContent = "Ready to execute program.";
-    this.renderMaze();
-  }
+  runRover() {
+    this.stopTimer();
+    this.rover = { x: 0, y: 0, d: 0 };
+    this.roverMsg = "";
+    this.roverWon = false;
 
-  async runProgram() {
-    if (this.isRunning) return;
-    this.rebuildProgramFromDOM();
     if (this.program.length === 0) {
-      if (this.statusText) this.statusText.textContent = "Add some blocks to the workspace first!";
+      this.roverMsg = "Add some blocks first!";
+      this.renderKids();
       return;
     }
 
-    this.isRunning = true;
-    this.stepIndex = 0;
-    if (this.statusText) this.statusText.textContent = "Executing visual program...";
+    this.renderKids();
+    const isRock = (x, y) => this.ROCKS.some(([rx, ry]) => rx === x && ry === y);
+    let i = 0;
 
-    for (let i = 0; i < this.program.length; i++) {
-      if (!this.isRunning) break;
-      const cmd = this.program[i];
-      await this.executeCommand(cmd);
-      this.renderMaze();
-      await new Promise(r => setTimeout(r, 450));
+    this.roverTimer = setInterval(() => {
+      const r = { ...this.rover };
+      const b = this.program[i % this.program.length];
+      i++;
 
-      // Check win condition
-      if (this.grid[this.rover.y][this.rover.x] === 2) {
-        if (this.statusText) this.statusText.textContent = "🎉 Goal reached! Star collected with intelligent computational logic!";
-        this.isRunning = false;
-        return;
-      }
-    }
-
-    if (this.isRunning) {
-      if (this.grid[this.rover.y][this.rover.x] === 2) {
-        if (this.statusText) this.statusText.textContent = "🎉 Goal reached!";
-      } else {
-        if (this.statusText) this.statusText.textContent = "Program finished. Goal not reached yet. Try adjusting your If/Then logic!";
-      }
-    }
-    this.isRunning = false;
-  }
-
-  async executeCommand(cmd) {
-    const forwardDeltas = [
-      { dx: 0, dy: -1 }, // North
-      { dx: 1, dy: 0 },  // East
-      { dx: 0, dy: 1 },  // South
-      { dx: -1, dy: 0 }  // West
-    ];
-
-    if (cmd === "forward") {
-      const delta = forwardDeltas[this.rover.dir];
-      const nx = this.rover.x + delta.dx;
-      const ny = this.rover.y + delta.dy;
-      if (nx >= 0 && nx < this.gridSize && ny >= 0 && ny < this.gridSize && this.grid[ny][nx] !== 1) {
-        this.rover.x = nx;
-        this.rover.y = ny;
-      } else {
-        if (this.statusText) this.statusText.textContent = "⚠️ Bumped into a wall! Sensor triggered.";
-      }
-    } else if (cmd === "turn_left") {
-      this.rover.dir = (this.rover.dir + 3) % 4;
-    } else if (cmd === "turn_right") {
-      this.rover.dir = (this.rover.dir + 1) % 4;
-    } else if (cmd === "if_obstacle_turn") {
-      // Check forward obstacle
-      const delta = forwardDeltas[this.rover.dir];
-      const nx = this.rover.x + delta.dx;
-      const ny = this.rover.y + delta.dy;
-      const isBlocked = nx < 0 || nx >= this.gridSize || ny < 0 || ny >= this.gridSize || this.grid[ny][nx] === 1;
-      if (isBlocked) {
-        this.rover.dir = (this.rover.dir + 1) % 4; // Turn right
-        if (this.statusText) this.statusText.textContent = "🤖 Condition TRUE: Obstacle detected -> turning right!";
-      }
-    }
-  }
-
-  renderMaze() {
-    if (!this.ctx || !this.canvas) return;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    for (let r = 0; r < this.gridSize; r++) {
-      for (let c = 0; c < this.gridSize; c++) {
-        const x = c * this.cellSize;
-        const y = r * this.cellSize;
-        const cellType = this.grid[r][c];
-
-        // Draw tile
-        this.ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
-        this.ctx.strokeRect(x, y, this.cellSize, this.cellSize);
-
-        if (cellType === 1) {
-          // Obstacle rock
-          this.ctx.fillStyle = "#1e293b";
-          this.ctx.fillRect(x + 4, y + 4, this.cellSize - 8, this.cellSize - 8);
-          this.ctx.fillStyle = "#ef4444";
-          this.ctx.font = "16px sans-serif";
-          this.ctx.fillText("🧱", x + 14, y + 30);
-        } else if (cellType === 2) {
-          // Star Goal
-          this.ctx.fillStyle = "rgba(255, 179, 0, 0.25)";
-          this.ctx.fillRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4);
-          this.ctx.fillStyle = "#ffb300";
-          this.ctx.font = "20px sans-serif";
-          this.ctx.fillText("⭐", x + 13, y + 33);
+      if (b === "fwd") {
+        const [dx, dy] = this.DIRS[r.d];
+        const nx = r.x + dx;
+        const ny = r.y + dy;
+        if (nx >= 0 && nx < 6 && ny >= 0 && ny < 6 && !isRock(nx, ny)) {
+          r.x = nx;
+          r.y = ny;
+        }
+      } else if (b === "left") {
+        r.d = (r.d + 3) % 4;
+      } else if (b === "right") {
+        r.d = (r.d + 1) % 4;
+      } else if (b === "if") {
+        const [dx, dy] = this.DIRS[r.d];
+        const nx = r.x + dx;
+        const ny = r.y + dy;
+        if (nx < 0 || nx >= 6 || ny < 0 || ny >= 6 || isRock(nx, ny)) {
+          r.d = (r.d + 1) % 4;
         }
       }
+
+      this.rover = r;
+
+      if (r.x === this.STAR[0] && r.y === this.STAR[1]) {
+        this.stopTimer();
+        this.roverWon = true;
+        this.roverMsg = "⭐ You did it! The robot reached the star!";
+        window.app?.markKidsDone("rover");
+        this.renderKids();
+        window.app?.updateChipLine(this.getChipLine());
+      } else if (i > 30) {
+        this.stopTimer();
+        this.roverMsg = "Hmm, the robot got lost. Try different blocks!";
+        this.renderKids();
+      } else {
+        this.drawRoverCanvas();
+      }
+    }, 450);
+  }
+
+  drawRoverCanvas() {
+    const c = document.getElementById("roverCanvas");
+    if (!c) return;
+    const ctx = c.getContext("2d");
+    const S = 48;
+    ctx.clearRect(0, 0, 288, 288);
+
+    for (let y = 0; y < 6; y++) {
+      for (let x = 0; x < 6; x++) {
+        ctx.fillStyle = (x + y) % 2 === 0 ? "#E8F4FF" : "#DDEEFF";
+        ctx.fillRect(x * S, y * S, S, S);
+      }
     }
 
-    // Draw Rover Sprite
-    const rx = this.rover.x * this.cellSize + this.cellSize / 2;
-    const ry = this.rover.y * this.cellSize + this.cellSize / 2;
+    ctx.font = "28px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const [rx, ry] of this.ROCKS) {
+      ctx.fillText("🪨", rx * S + S / 2, ry * S + S / 2);
+    }
+    ctx.fillText("⭐", this.STAR[0] * S + S / 2, this.STAR[1] * S + S / 2);
 
-    this.ctx.save();
-    this.ctx.translate(rx, ry);
-    this.ctx.rotate((this.rover.dir * 90 * Math.PI) / 180);
+    const { x, y, d } = this.rover;
+    ctx.save();
+    ctx.translate(x * S + S / 2, y * S + S / 2);
+    ctx.rotate((d * Math.PI) / 2);
+    ctx.fillStyle = "#4FB3FF";
+    ctx.strokeStyle = "#2B2A4C";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
 
-    // Rover chassis
-    this.ctx.fillStyle = "#00d2ff";
-    this.ctx.beginPath();
-    this.ctx.arc(0, 0, 16, 0, Math.PI * 2);
-    this.ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.moveTo(12, 0);
+    ctx.lineTo(-6, -8);
+    ctx.lineTo(-6, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
 
-    // Direction indicator arrow
-    this.ctx.fillStyle = "#ffffff";
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, -12);
-    this.ctx.lineTo(-8, 6);
-    this.ctx.lineTo(8, 6);
-    this.ctx.closePath();
-    this.ctx.fill();
+  renderKids() {
+    if (!this.root) return;
 
-    this.ctx.restore();
+    this.root.innerHTML = `
+      <div class="kids-two-col">
+        <!-- Left card: Pick blocks & Robot's brain -->
+        <div class="kids-card">
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:6px;">🧩 1. Tap a block to add it</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+            ${Object.entries(BLOCK_INFO).map(([k, info]) => `
+              <button type="button" data-add-block="${k}" style="padding:14px 12px;border-radius:16px;border:3px solid #2B2A4C;background:${info.color};color:#2B2A4C;font-family:var(--font-body);font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #2B2A4C;text-align:left;">
+                + ${info.label}
+              </button>
+            `).join("")}
+          </div>
+
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:8px;">🧠 2. The robot's brain (repeats forever)</div>
+          <div style="background:#FFF8EC;border:3px dashed #2B2A4C;border-radius:18px;padding:12px;min-height:170px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;">
+            <div style="padding:10px 14px;border-radius:12px;background:#4ADE80;border:2px solid #2B2A4C;font-weight:800;">▶ When I press GO</div>
+            ${this.program.length === 0 ? `<div style="padding:18px;text-align:center;color:#6B6890;font-weight:700;">Your brain is empty! Add some blocks above.</div>` : ""}
+            ${this.program.map((b, i) => `
+              <button type="button" data-remove-block="${i}" style="padding:10px 14px;border-radius:12px;background:${BLOCK_INFO[b].color};border:2px solid #2B2A4C;font-family:var(--font-body);font-size:16px;font-weight:800;color:#2B2A4C;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <span>${BLOCK_INFO[b].label}</span>
+                <span style="opacity:0.65;">✕</span>
+              </button>
+            `).join("")}
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" id="btnKidsRoverGo" style="flex:1;padding:14px 20px;border-radius:16px;border:3px solid #2B2A4C;background:#4ADE80;color:#2B2A4C;font-family:var(--font-display);font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #2B2A4C;">▶ GO!</button>
+            <button type="button" id="btnKidsRoverReset" style="padding:14px 18px;border-radius:16px;border:3px solid #2B2A4C;background:#FFC53D;color:#2B2A4C;font-family:var(--font-body);font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #2B2A4C;">🔄 Start over</button>
+            <button type="button" id="btnKidsRoverClear" style="padding:14px 18px;border-radius:16px;border:3px solid #2B2A4C;background:#FFF8EC;color:#2B2A4C;font-family:var(--font-body);font-size:16px;font-weight:800;cursor:pointer;">Clear blocks</button>
+          </div>
+        </div>
+
+        <!-- Right card: Watch the robot go -->
+        <div class="kids-card" style="display:flex;flex-direction:column;align-items:center;">
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:12px;align-self:flex-start;">🗺️ 3. Watch the robot go</div>
+          <canvas id="roverCanvas" width="288" height="288" style="border-radius:20px;border:4px solid #2B2A4C;background:#E8F4FF;"></canvas>
+          <div style="margin-top:12px;font-size:16px;font-weight:800;color:#6B6890;">🔵 Robot · 🪨 Rock · ⭐ Goal</div>
+          ${this.roverMsg ? `
+            <div style="margin-top:12px;padding:12px 18px;border-radius:16px;background:${this.roverWon ? "#E3F9EA" : "#FFE8E8"};border:3px solid #2B2A4C;font-family:var(--font-display);font-size:20px;font-weight:800;text-align:center;">
+              ${this.roverMsg}
+            </div>
+          ` : ""}
+        </div>
+      </div>
+    `;
+
+    this.root.querySelectorAll("[data-add-block]").forEach(btn => {
+      btn.addEventListener("click", () => this.addBlock(btn.dataset.addBlock));
+    });
+    this.root.querySelectorAll("[data-remove-block]").forEach(btn => {
+      btn.addEventListener("click", () => this.removeBlock(Number(btn.dataset.removeBlock)));
+    });
+    this.root.querySelector("#btnKidsRoverGo")?.addEventListener("click", () => this.runRover());
+    this.root.querySelector("#btnKidsRoverReset")?.addEventListener("click", () => this.resetRover(false));
+    this.root.querySelector("#btnKidsRoverClear")?.addEventListener("click", () => this.resetRover(true));
+
+    this.drawRoverCanvas();
   }
 }
 

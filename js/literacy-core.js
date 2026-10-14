@@ -704,6 +704,160 @@ ${kept.map(f => `${f.label}: ${f.value}`).join("\n") || "(nothing left to work w
   }
 }
 
+/**
+ * Kids Activity 4 ("Is it AI?") — Kid-sized version of Lesson 1 from Literacy Core
+ */
+const KIDS_SORT_ITEMS = [
+  { id: 0, text: "🧮 Calculator doing 48 + 17", bin: "rules" },
+  { id: 1, text: "⏰ Alarm that rings at 7 every day", bin: "rules" },
+  { id: 2, text: "📧 Mail app that learned what junk looks like", bin: "learn" },
+  { id: 3, text: "📷 Photo app that finds every picture of your dog", bin: "learn" },
+  { id: 4, text: "🎬 App that guesses what you want to watch", bin: "learn" },
+  { id: 5, text: "💬 Chatbot writing a poem about rain", bin: "make" }
+];
+
+const KIDS_SORT_BINS = [
+  { key: "rules", title: "📏 Follows rules", sub: "A person wrote every step", color: "#FFE3A3" },
+  { key: "learn", title: "🎓 Learned from examples", sub: "Got smarter by looking at lots of things", color: "#D6EEFF" },
+  { key: "make", title: "🎨 Makes new stuff", sub: "Writes or draws something brand new", color: "#EADFFF" }
+];
+
+class KidsSortActivity {
+  constructor() {
+    this.pickedCard = null;
+    this.placed = {};
+    this.sortMsg = "";
+    this.sortOk = false;
+    this.root = document.getElementById("kidsActSort");
+    this.renderKids();
+  }
+
+  getChipLine() {
+    if (this.sortOk) {
+      return "You got it! Only some gadgets are really AI — the ones that LEARN.";
+    }
+    return "Not everything smart is AI! Some things just follow rules a person wrote.";
+  }
+
+  dropCard(bin) {
+    if (this.pickedCard === null) return;
+    this.placed = { ...this.placed, [this.pickedCard]: bin };
+    this.pickedCard = null;
+    this.sortMsg = "";
+    this.renderKids();
+  }
+
+  checkSort() {
+    if (Object.keys(this.placed).length < KIDS_SORT_ITEMS.length) {
+      this.sortOk = false;
+      this.sortMsg = "Sort every card first!";
+      this.renderKids();
+      return;
+    }
+    const wrong = KIDS_SORT_ITEMS.filter(it => this.placed[it.id] !== it.bin);
+    if (wrong.length === 0) {
+      this.sortOk = true;
+      this.sortMsg = "🎉 All right! You know what makes AI different.";
+      window.app?.markKidsDone("sort");
+      this.renderKids();
+      window.app?.updateChipLine(this.getChipLine());
+    } else {
+      this.sortOk = false;
+      this.sortMsg = `${wrong.length} card(s) in the wrong box. Ask: did it LEARN, or just follow steps?`;
+      this.renderKids();
+    }
+  }
+
+  resetSort() {
+    this.placed = {};
+    this.pickedCard = null;
+    this.sortMsg = "";
+    this.sortOk = false;
+    this.renderKids();
+    window.app?.updateChipLine(this.getChipLine());
+  }
+
+  renderKids() {
+    if (!this.root) return;
+    const unplaced = KIDS_SORT_ITEMS.filter(it => this.placed[it.id] === undefined);
+
+    this.root.innerHTML = `
+      <div class="kids-card" style="margin-bottom:20px;">
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:10px;">
+          🃏 1. Tap a card to pick it up ${this.pickedCard !== null ? "— now tap a box below!" : ""}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;min-height:54px;">
+          ${unplaced.length === 0 ? `<div style="color:#6B6890;font-weight:800;padding:12px;">All cards are in boxes! Press Check below.</div>` : ""}
+          ${unplaced.map(it => `
+            <button type="button" data-pick-card="${it.id}" style="padding:12px 16px;border-radius:16px;border:3px solid #2B2A4C;background:${this.pickedCard === it.id ? "#FFC53D" : "#FFF8EC"};font-family:var(--font-body);font-size:17px;font-weight:800;color:#2B2A4C;cursor:pointer;box-shadow:0 4px 0 #2B2A4C;transform:${this.pickedCard === it.id ? "translateY(-4px)" : "none"};">
+              ${it.text}
+            </button>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="kids-three-col" style="margin-bottom:20px;">
+        ${KIDS_SORT_BINS.map(bin => `
+          <div data-drop-bin="${bin.key}" style="background:${bin.color};border:4px solid #2B2A4C;border-radius:22px;padding:18px;min-height:220px;cursor:${this.pickedCard !== null ? "pointer" : "default"};box-shadow:0 6px 0 #2B2A4C;">
+            <div style="font-family:var(--font-display);font-size:22px;font-weight:800;">${bin.title}</div>
+            <div style="font-size:15px;font-weight:700;color:#2B2A4C;opacity:0.8;margin-bottom:12px;">${bin.sub}</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              ${KIDS_SORT_ITEMS.filter(it => this.placed[it.id] === bin.key).map(it => {
+                const isWrong = this.sortMsg && !this.sortOk && this.placed[it.id] !== it.bin;
+                return `
+                  <button type="button" data-pick-placed="${it.id}" style="padding:10px 12px;border-radius:12px;border:2px solid #2B2A4C;background:${this.pickedCard === it.id ? "#FFC53D" : "#FFFFFF"};font-family:var(--font-body);font-size:15px;font-weight:800;color:#2B2A4C;text-align:left;cursor:pointer;${isWrong ? "outline:3px solid #FF6B6B;" : ""}">
+                    ${it.text}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button type="button" id="btnKidsSortCheck" style="padding:16px 28px;border-radius:18px;border:3px solid #2B2A4C;background:#4ADE80;font-family:var(--font-display);font-size:22px;font-weight:800;color:#2B2A4C;cursor:pointer;box-shadow:0 5px 0 #2B2A4C;">
+          ✅ Check my boxes
+        </button>
+        <button type="button" id="btnKidsSortReset" style="padding:16px 22px;border-radius:18px;border:3px solid #2B2A4C;background:#FFFFFF;font-family:var(--font-body);font-size:17px;font-weight:800;color:#2B2A4C;cursor:pointer;">
+          Start over
+        </button>
+        ${this.sortMsg ? `
+          <div style="padding:12px 18px;border-radius:16px;background:${this.sortOk ? "#E3F9EA" : "#FFE8E8"};border:3px solid #2B2A4C;font-family:var(--font-display);font-size:20px;font-weight:800;">
+            ${this.sortMsg}
+          </div>
+        ` : ""}
+      </div>
+    `;
+
+    this.root.querySelectorAll("[data-pick-card]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        this.pickedCard = Number(btn.dataset.pickCard);
+        this.renderKids();
+      });
+    });
+
+    this.root.querySelectorAll("[data-pick-placed]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.pickedCard = Number(btn.dataset.pickPlaced);
+        this.renderKids();
+      });
+    });
+
+    this.root.querySelectorAll("[data-drop-bin]").forEach(binEl => {
+      binEl.addEventListener("click", () => {
+        this.dropCard(binEl.dataset.dropBin);
+      });
+    });
+
+    this.root.querySelector("#btnKidsSortCheck")?.addEventListener("click", () => this.checkSort());
+    this.root.querySelector("#btnKidsSortReset")?.addEventListener("click", () => this.resetSort());
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   window.literacyCore = new LiteracyCoreEngine();
+  window.kidsSortActivity = new KidsSortActivity();
 });
+

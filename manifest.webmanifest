@@ -4,8 +4,8 @@
   "description": "Zero-cost, privacy-first K-12 Artificial Intelligence education platform featuring in-browser Python WebAssembly, on-device computer vision, and local LLMs.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0B132B",
-  "theme_color": "#00D2FF",
+  "background_color": "#FFF8EC",
+  "theme_color": "#FFF8EC",
   "icons": [
     {
       "src": "favicon.svg",
